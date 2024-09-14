@@ -1,0 +1,18 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: white;
+  color: black;
+  scroll-behavior: smooth;
+  /* background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%) !important; */
+}
