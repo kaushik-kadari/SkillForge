@@ -3,25 +3,9 @@ import { CgProfile } from 'react-icons/cg';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-  const [isSticky, setIsSticky] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
-
-  const handleScroll = () => {
-    if (window.scrollY > 0) {
-      setIsSticky(true);
-    } else {
-      setIsSticky(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -32,7 +16,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`bg-[#e1dfde] border-gray-200 sticky top-0 shadow-md h-[10vh] transition-opacity duration-300 ${isSticky ? 'opacity-100' : 'opacity-100'}`}>
+    <nav className="bg-[#e1dfde] border-gray-200 sticky top-0 z-50 shadow-md h-[10vh] transition-opacity duration-300">
     <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
       <a to="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="Logo.png" className="w-40" alt="Flowbite Logo" />

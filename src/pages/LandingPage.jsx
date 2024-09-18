@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen bg-[#ebdfc53c]">
 
@@ -9,7 +12,11 @@ const LandingPage = () => {
         <div className="container mx-auto text-center ">
           <h2 className="text-6xl font-semibold text-black">Master Your Desired Tech Stack</h2>
           <p className="mt-4 text-xl text-black">Self-paced learning paths for Frontend, Backend, Machine Learning, and Aptitude.</p>
-          <button className="mt-6 px-8 py-3 bg-white text-black font-semibold rounded hover:bg-black hover:text-white transition-all">Get Started</button>
+          <button 
+              className="mt-6 px-8 py-3 bg-white text-black font-semibold rounded hover:bg-black hover:text-white transition-all"
+              onClick={() => navigate('/dashboard')}>
+            Get Started
+          </button>
         </div>
       </section>
 

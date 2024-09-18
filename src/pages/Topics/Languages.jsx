@@ -1,60 +1,82 @@
 import React from 'react';
-import Carousel from "../components/Carousel.jsx";
+import { ImFire } from "react-icons/im";
 import { Link } from 'react-router-dom';
-import { ImFire } from 'react-icons/im'; 
+import Carousel from '../../components/Carousel.jsx';
 import { useEffect,useState } from 'react';
 
-const Dashboard = () => {
-  // Define topics and progress data
+const Languages = () => {
+  // Define topics and badges data
   const topics = [
-    { path: "/languages", label: "Languages", index: 0 },
-    { path: "/frontend", label: "Frontend", index: 1 },
-    { path: "/backend", label: "Backend", index: 2 }, 
-    { path: "/machine-learning", label: "Machine Learning", index: 3 }, 
-    { path: "/aptitude", label: "Aptitude", index: 4 }, 
+    { path: "/c", label: "C" },
+    { path: "/cplusplus", label: "C++" },
+    { path: "/csharp", label: "C#" },
+    { path: "/go", label: "Go" },
+    { path: "/java", label: "Java" },
+    { path: "/javascript", label: "JavaScript" },
+    { path: "/kotlin", label: "Kotlin" },
+    { path: "/php", label: "PHP" },
+    { path: "/python", label: "Python" },
+    { path: "/ruby", label: "Ruby" },
+    { path: "/swift", label: "Swift" },
+    { path: "/typescript", label: "TypeScript" }
   ];
-
+  
   const progress = [
-    { label: "Languages", value: 75 },
-    { label: "Frontend", value: 80 },
-    { label: "Backend", value: 70 },
-    { label: "Machine Learning", value: 60 },
-    { label: "Aptitude", value: 55 }
+    { label: "C", value: 20 },
+    { label: "C++", value: 40 },
+    { label: "C#", value: 50 },
+    { label: "Go", value: 30 },
+    { label: "Java", value: 80 },
+    { label: "JavaScript", value: 90 },
+    { label: "Kotlin", value: 35 },
+    { label: "PHP", value: 45 },
+    { label: "Python", value: 75 },
+    { label: "Ruby", value: 25 },
+    { label: "Swift", value: 60 },
+    { label: "TypeScript", value: 70 }
   ];
+  
 
   const badges = [
-    { id: 1, count: 5 },
-    { id: 2, count: 6 },
-    { id: 3, count: 7 },
-    { id: 4, count: 8 },
-    { id: 5, count: 9 }
+    { id: 1 ,count:5 },
+    { id: 2 ,count:6 },
+    { id: 3 ,count:7 },
+    { id: 4 ,count:10},
+    { id: 5 ,count:5},
+    { id: 6 ,count:6},
+    { id: 7 ,count:7},
+    { id: 8 ,count:8},
+    { id: 9 ,count:9},
+    { id: 10 ,count:10},
+    { id: 11 ,count:7},
+    { id: 12 ,count:8}
   ];
 
-  const heading="Dashboard";
+  const heading = "Languages";
 
   const [animatedProgress, setAnimatedProgress] = useState(
-    progress.map(() => 0) 
+    progress.map(() => 0) // Initial state with all progress values set to 0
   );
 
   useEffect(() => {
-   
+    // Animate the progress after the component is mounted
     const timeoutId = setTimeout(() => {
       setAnimatedProgress(progress.map(item => item.value));
-    }, 500); 
+    }, 500); // delay for the animation
 
-    return () => clearTimeout(timeoutId); 
+    return () => clearTimeout(timeoutId); // Cleanup function
   }, [progress]);
 
   return (
     <>
       <div>
         <h1 className='text-4xl font-bold text-center my-10'>{heading}</h1>
-        <div className="lg:grid lg:grid-cols-3 gap-4 p-10 flex flex-col max-h-2/3">
+        <div className="lg:grid lg:grid-cols-2 gap-4 p-10 flex flex-col max-h-2/3">
           <div className="bg-[#ebe7de5b] w-11/12 mx-auto rounded-md border shadow-lg p-2">
             <div className='grid grid-cols-2 gap-4'>
               <div className='w-11/12 mx-auto'>
                 <p className='bg-[#e4e2e2] text-2xl text-center rounded-md my-2'>Topics</p>
-                <div className='flex flex-col md:space-y-12 space-y-8 my-5'>
+                <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
                   {topics.map((topic) => (
                     <Link key={topic.index} to={topic.path} className="text-xl text-center">
                       {topic.label}
@@ -62,13 +84,13 @@ const Dashboard = () => {
                   ))}
                 </div>
               </div>
-              <div className='w-11/12 mx-auto'>
+              <div className=''>
                 <p className='bg-[#e4e2e2] text-2xl text-center rounded-md my-2'>Badges</p>
-                <div className='flex flex-col  md:space-y-12 space-y-8 my-5'>
+                <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
                   {badges.map((badge) => (
                     <div key={badge.id} className='mx-auto flex'>
                       <p className='text-xl'>{badge.count} of 10</p>
-                      <ImFire className='text-xl ml-2  md:block '/>
+                      <ImFire className='text-xl  ml-2'/>
                     </div>
                   ))}
                 </div>
@@ -76,8 +98,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className='bg-[#ebe7de5b] w-11/12 mx-auto rounded-md border shadow-lg md:col-span-2'>
-            <p className='text-2xl text-center m-4 p-2 bg-[#e4e2e2] rounded-md'>Progress</p>
+          <div className='bg-[#ebe7de5b] mx-auto rounded-md border shadow-lg w-11/12'>
+            <p className='text-2xl text-center m-3 p-2 bg-[#e4e2e2] rounded-md'>Progress</p>
 
             {/* Carousel for small and medium screens */}
             <div className="md:hidden flex flex-col justify-center mt-8 md:mt-24">
@@ -89,14 +111,14 @@ const Dashboard = () => {
             </div>
 
             {/* Grid layout for large screens */}
-            <div className={`hidden md:grid md:grid-cols-5 md:gap-8 md:mt-8 lg:mt-24`}>
+            <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:mt-8 lg:mt-8`}>
               {progress.map((item, index) => (
                 <div key={index} className="text-center">
                   <div
                     className="radial-progress bg-[#e4e2e2] text-primary-content border-[#e4e2e2] border-4 mx-auto"
                     style={{ 
                       "--value": animatedProgress[index], 
-                      "transition": "var(--value) 2s ease-in", 
+                      "transition": "var(--value) 5s ease"
                     }}
                     role="progressbar"
                   >
@@ -111,6 +133,6 @@ const Dashboard = () => {
       </div>
     </>
   );
-};
+}
 
-export default Dashboard;
+export default Languages;

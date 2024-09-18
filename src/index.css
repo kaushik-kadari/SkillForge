@@ -16,3 +16,9 @@ body {
   scroll-behavior: smooth;
   /* background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%) !important; */
 }
+
+/* In your CSS file */
+.smooth-progress {
+  transition: transform 3s ease, --value 2s ease;
+}
+
