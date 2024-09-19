@@ -1,30 +1,233 @@
-import React from 'react'
+import React from "react";
+import { useState } from "react";
+
 import { AiOutlineRead } from "react-icons/ai";
 import { FiPlayCircle } from "react-icons/fi";
 import { BiTargetLock } from "react-icons/bi";
 import { BsChatRightText } from "react-icons/bs";
 import { VscFeedback } from "react-icons/vsc";
+import { FaStar } from 'react-icons/fa';
 
 const Content = () => {
-  return (
-    <div className='grid grid-cols-3 p-7 gap-5 items-start'>
-        <div className='w-11/12 mx-auto bg-[#ebe7de5b] p-2 rounded-md border shadow-lg'>
-            <h1 className='text-2xl font-bold text-center my-2 underline border-b-2 pb-4 cursor-pointer'>Subject Name</h1>
-            <p className='text-xl text-center font-semibold my-4'>Topic Name</p>
-            <div className='flex flex-col md:space-y-5 space-y-8 p-1'>
-              <p className='text-xl flex items-center gap-3 cursor-pointer bg-[#e4e2e2] p-2 rounded-md'> <AiOutlineRead style={{opacity:"0.5"}}/> Read Content</p>
-              <p className='text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md hover:bg-[#e4e2e2] '> <FiPlayCircle style={{opacity:"0.5"}}/> Watch Video</p>
-              <p className='text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md hover:bg-[#e4e2e2]'> <BiTargetLock style={{opacity:"0.5"}}/> Take Quiz</p>
-              <p className='text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md hover:bg-[#e4e2e2]'> <BsChatRightText style={{opacity:"0.5"}}/> Chat with Pdf</p>
-              <p className='text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md hover:bg-[#e4e2e2]'> <VscFeedback style={{opacity:"0.5"}}/> Feedback</p>
-            </div>
-        </div>
-        <div className='w-full mx-auto col-span-2 bg-[#ebe7de5b] p-2 rounded-md border shadow-lg min-h-[100vh]'>
-          <h1 className='text-2xl font-bold text-center my-2  pb-4 cursor-pointer'>PDF content</h1>
-          <p className='px-10'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad iure impedit provident molestias sunt quae minus totam deleniti veritatis reprehenderit, facere laborum quia adipisci dicta facilis dignissimos similique numquam ducimus tempora quasi delectus sapiente omnis. Dolores laborum eos officiis alias repellendus at iure id atque ex eius, hic maxime. Corporis asperiores quasi nulla, delectus autem debitis saepe error ipsa adipisci vitae reprehenderit quos tempore distinctio laborum, earum dolore non quia beatae nostrum. Perspiciatis sequi voluptate id minima ipsam fugiat aperiam eveniet saepe quasi, laboriosam dignissimos ut neque beatae recusandae veniam ipsa unde omnis enim nostrum qui? Illum laborum sit temporibus quidem corrupti, repudiandae sapiente esse hic! Nemo expedita pariatur iusto fuga animi repellat libero molestiae est ut. Voluptatem doloribus, consequatur architecto id quod ratione, assumenda tempore ea possimus esse asperiores perferendis facilis repellat! Voluptatibus vitae explicabo tempora repellat dolorem, facere cum debitis suscipit. Voluptates minus beatae dicta, necessitatibus distinctio ut architecto facere soluta animi dolorem nostrum maiores saepe quasi, vel optio iure, ex eos. Voluptatum quo expedita fugiat quia voluptates cum eaque, facilis possimus ipsam, ab illo. Laboriosam nulla, quidem, dolorum consectetur natus quasi fuga rem facere odit pariatur incidunt aliquam accusamus veritatis quibusdam voluptas magnam quo similique, quisquam molestias commodi. Minima voluptatem, aliquid, omnis reiciendis voluptates iusto eos necessitatibus iure molestias consequuntur tempore sapiente. Nostrum, dignissimos. Voluptas iusto vero illum magni, veniam mollitia ipsam porro accusamus non itaque voluptatibus facilis dolorum reiciendis ad impedit numquam cupiditate repellendus nostrum? Beatae ab, fugit unde enim in vel voluptatum sint soluta, eius, consectetur debitis tempora? Qui amet quis excepturi nulla voluptas alias voluptatem dolorum corporis reiciendis commodi, laborum facilis distinctio error eius modi numquam sit corrupti doloremque quod aliquam, quam eum dolorem. Neque placeat expedita officiis, ex, eveniet saepe reprehenderit nobis nostrum error repellendus veniam suscipit nisi porro nesciunt cumque dignissimos commodi animi, qui quasi impedit! Ullam natus autem recusandae voluptatum perferendis tempora iusto doloremque aut dolores quo ea dolorum adipisci fugit, animi perspiciatis unde repudiandae rerum ipsum optio magni sapiente iure, eum sed? Repudiandae odio eaque dignissimos perspiciatis autem atque laborum quidem a quae sequi voluptatibus neque, modi aut qui asperiores quasi eius ea earum consequatur quam, inventore harum soluta? Excepturi ut eveniet perspiciatis saepe ex similique accusantium aut explicabo obcaecati tenetur consequuntur iste, culpa reprehenderit sed exercitationem fuga quae nisi placeat distinctio iure eum! Perferendis dignissimos delectus ut ullam, eaque animi voluptatum corrupti aliquam, nam deleniti at culpa cupiditate voluptates illum exercitationem quisquam a. Dolorum atque, possimus ratione quia, laborum deserunt adipisci et magnam consequatur harum, nobis saepe! Expedita pariatur magni excepturi ullam porro nihil, eius, itaque facilis quisquam sunt veniam beatae quia corrupti repellendus velit cum accusamus provident dolor nisi incidunt impedit laboriosam. Molestiae corporis magnam odio aliquid provident eaque fuga ut voluptatibus optio mollitia a, tenetur numquam fugit. Rem modi commodi explicabo quisquam, odio a necessitatibus voluptas consectetur fugiat incidunt, impedit accusantium repellat! Consequatur nesciunt illum, saepe nisi eum laboriosam, nulla dignissimos cumque corporis quia voluptatem? Adipisci eligendi voluptatem atque ut modi! Recusandae praesentium dolorem tempora provident. Ipsam?</p>
-        </div>
-    </div>
-  )
-}
+  const [showContent, setShowContent] = useState(false);
+  const [showVideo, setShowVideo] = useState(true);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
-export default Content
+  const questions = [
+    "How would you rate the content quality?",
+    "How clear was the explanation of the topics?",
+    "Was the content helpful for your learning?",
+    "How was the overall user experience on the platform?",
+    "Would you recommend this platform to others?"
+  ];
+
+  const [ratings, setRatings] = useState(Array(questions.length).fill(0));
+  const [hovered, setHovered] = useState(Array(questions.length).fill(null));
+
+  // Handle star click
+  const handleRating = (index, value) => {
+    const newRatings = [...ratings];
+    newRatings[index] = value;
+    setRatings(newRatings);
+  };
+
+  // Handle hover state
+  const handleHover = (index, value) => {
+    const newHovered = [...hovered];
+    newHovered[index] = value;
+    setHovered(newHovered);
+  };
+
+  // Reset hover state
+  const handleHoverLeave = (index) => {
+    const newHovered = [...hovered];
+    newHovered[index] = null; 
+    setHovered(newHovered);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Feedback submitted:", ratings);
+    setRatings(Array(questions.length).fill(0));
+  };
+
+  const handleClick = (type) => {
+    setShowContent(type === 'content');
+    setShowVideo(type === 'video');
+    setShowQuiz(type === 'quiz');
+    setShowChat(type === 'chat');
+    setShowFeedback(type === 'feedback');
+  };
+
+  return (
+    <div className="grid grid-cols-3 p-7 gap-5 items-start">
+      <div className="w-11/12 mx-auto bg-[#ebe7de5b] p-2 rounded-md border shadow-lg">
+        <h1 className="text-2xl font-bold text-center my-2 underline border-b-2 pb-4 cursor-pointer">
+          Subject Name
+        </h1>
+        <p className="text-xl text-center font-semibold my-4">Topic Name</p>
+        <div className="flex flex-col md:space-y-5 space-y-8 p-1">
+          <p
+            className={`text-xl flex items-center gap-3 cursor-pointer ${
+              showContent && "bg-[#e4e2e2]"
+            } p-2 rounded-md hover:bg-[#e4e2e2] transition-all duration-300`}
+            onClick={() => handleClick("content")}
+          >
+            <AiOutlineRead style={{ opacity: "0.5" }} /> Read Content
+          </p>
+          <p
+            className={`text-xl flex items-center gap-3 cursor-pointer ${
+              showVideo && "bg-[#e4e2e2]"
+            } p-2 rounded-md hover:bg-[#e4e2e2] transition-all duration-300`}
+            onClick={() => handleClick("video")}
+          >
+            <FiPlayCircle style={{ opacity: "0.5" }} /> Watch Video
+          </p>
+          <p
+            className={`text-xl flex items-center gap-3 cursor-pointer ${
+              showQuiz && "bg-[#e4e2e2]"
+            }  p-2 rounded-md hover:bg-[#e4e2e2] transition-all duration-300`}
+            onClick={() => handleClick("quiz")}
+          >
+            <BiTargetLock style={{ opacity: "0.5" }} /> Take Quiz
+          </p>
+          <p
+            className={`text-xl flex items-center gap-3 cursor-pointer ${
+              showChat && "bg-[#e4e2e2]"
+            } p-2 rounded-md hover:bg-[#e4e2e2] transition-all duration-300`}
+            onClick={() => handleClick("chat")}
+          >
+            <BsChatRightText style={{ opacity: "0.5" }} /> Chat with PDF
+          </p>
+          <p
+            className={`text-xl flex items-center gap-3 cursor-pointer ${
+              showFeedback && "bg-[#e4e2e2]"
+            } p-2 rounded-md hover:bg-[#e4e2e2] transition-all duration-300`}
+            onClick={() => handleClick("feedback")}
+          >
+            <VscFeedback style={{ opacity: "0.5" }} /> Feedback
+          </p>
+        </div>
+      </div>
+
+      {showContent && (
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-2 rounded-md border shadow-lg min-h-[100vh] ">
+          <h1 className="text-2xl font-bold text-center my-2  pb-4 cursor-pointer">
+            PDF content
+          </h1>
+          <p className="px-10">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
+            praesentium autem nulla provident assumenda sed perferendis sapiente
+            aliquid fugit quibusdam ab, omnis magni tempora architecto, nam
+            officia quod laborum qui voluptatum sequi eligendi ullam fuga error
+            recusandae. Dignissimos illum et assumenda error tenetur! Ex illo
+            asperiores quo. Ab, iusto nisi. Odio inventore voluptas doloribus
+            harum at laborum. Sequi, facilis doloribus quidem fugit, sunt qui
+            explicabo eius quasi sed hic soluta minima officiis tempore sit
+            ratione non alias voluptatibus vitae labore aspernatur dolorem
+            veniam? Libero quos rerum nemo beatae itaque nobis necessitatibus
+            quae ut voluptas officia? Soluta rerum, maxime minima consequatur
+            voluptates tempore! Pariatur ab, eaque suscipit dolore incidunt
+            fugiat accusantium cumque, harum totam corrupti perspiciatis,
+            corporis magnam tempora eligendi odit! Consectetur quod reiciendis
+            impedit, magni quam aspernatur delectus, esse veniam pariatur omnis
+            saepe sequi incidunt. Esse maiores in quas, tempora expedita
+            corrupti. Esse minus minima nesciunt ducimus nostrum repellendus
+            necessitatibus cupiditate hic velit officia fugiat, vitae expedita
+            corrupti corporis laudantium sit ipsam deserunt itaque a. Mollitia
+            magnam reprehenderit accusantium nisi officiis eaque dolore ex nobis
+            reiciendis officia porro, hic deleniti deserunt pariatur qui
+            nesciunt fugit quaerat, delectus inventore modi, fugiat cumque quasi
+            ipsum! Cupiditate facilis vero dolores et neque, accusantium quo
+            consectetur ullam dicta laudantium ratione voluptatibus, saepe
+            suscipit tenetur iste sequi autem illum magni deleniti nisi ut. Eius
+            soluta, temporibus, sed eos laboriosam quia voluptates excepturi
+            quaerat unde ea ipsa vitae deserunt repudiandae. Fuga nisi, corrupti
+            sunt officia qui vitae harum alias est laboriosam asperiores
+            voluptatum quasi cumque iure consequatur praesentium inventore neque
+            modi facere magnam. Voluptatem, nam. Quisquam, non dolores error qui
+            tempore sunt modi odio esse aliquid accusamus enim blanditiis vel
+            nemo quidem. Earum, veritatis dicta repellat esse accusamus
+            molestias itaque sequi neque, assumenda eveniet pariatur.
+            Reprehenderit voluptates officia eum commodi autem? Eos magnam
+            beatae rem deserunt?
+          </p>
+        </div>
+      )}
+
+      {showVideo && (
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-2">Machine Learning</h1>
+            <p>Reference Video</p>
+          </div>
+          <iframe
+            className="w-full h-[60vh] rounded-lg mx-auto mt-10 border border-black shadow-lg"
+            src="https://www.youtube.com/embed/ukzFI9rgwfU?si=qNO_N3K5G0GHwP3J"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+      )}
+
+      {showQuiz && (
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
+          <div>Quiz</div>
+        </div>
+      )}
+
+      {showChat && (
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
+          <div>Chat</div>
+        </div>
+      )}
+
+      {showFeedback && (
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
+          <h1 className="text-2xl font-bold mb-2 text-center">
+            Machine Learning
+          </h1>
+          <h1 className="text-xl font-semibold  text-center my-4">
+            We value your feedback!
+          </h1>
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
+          {questions.map((question, index) => (
+          <div key={index} className="">
+            <p className="text-xl mb-2">{question}</p>
+            <div className="flex space-x-2">
+              {[1, 2, 3, 4, 5].map((starValue) => (
+                <FaStar
+                  key={starValue}
+                  size={30}
+                  onClick={() => handleRating(index, starValue)} // Set rating on click
+                  onMouseEnter={() => handleHover(index, starValue)} // Hover effect
+                  onMouseLeave={() => handleHoverLeave(index)} // Reset hover on leave
+                  className={`cursor-pointer transition-all duration-200 ${
+                    (hovered[index] || ratings[index]) >= starValue
+                      ? "text-[#292929] scale-110"  // Star fills and slightly enlarges
+                      : "text-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+            <button
+              type="submit"
+              className="bg-[#292929] text-white font-bold py-2 px-4 rounded-md mx-auto"
+            >
+              Submit Feedback
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Content;
