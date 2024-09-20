@@ -2,10 +2,9 @@ import React from 'react';
 import { ImFire } from "react-icons/im";
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel.jsx';
-import { useEffect,useState } from 'react';
+import Progress from '../../components/Progress.jsx';
 
 const Languages = () => {
-  // Define topics and badges data
   const topics = [
     { path: "/c", label: "C" },
     { path: "/cplusplus", label: "C++" },
@@ -54,19 +53,6 @@ const Languages = () => {
 
   const heading = "Languages";
 
-  const [animatedProgress, setAnimatedProgress] = useState(
-    progress.map(() => 0) // Initial state with all progress values set to 0
-  );
-
-  useEffect(() => {
-    // Animate the progress after the component is mounted
-    const timeoutId = setTimeout(() => {
-      setAnimatedProgress(progress.map(item => item.value));
-    }, 500); // delay for the animation
-
-    return () => clearTimeout(timeoutId); // Cleanup function
-  }, [progress]);
-
   return (
     <>
       <div>
@@ -75,8 +61,8 @@ const Languages = () => {
           <div className="bg-[#ebe7de5b] w-11/12 mx-auto rounded-md border shadow-lg p-2">
             <div className='grid grid-cols-2 gap-4'>
               <div className='w-11/12 mx-auto'>
-                <p className='bg-[#e4e2e2] text-2xl text-center rounded-md my-2'>Topics</p>
-                <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
+                <p className='bg-[#e4e2e2] text-2xl text-center rounded-md'>Topics</p>
+                <div className='flex flex-col md:space-y-12 space-y-8 mt-10 '>
                   {topics.map((topic) => (
                     <Link key={topic.index} to={topic.path} className="text-xl text-center">
                       {topic.label}
@@ -85,7 +71,7 @@ const Languages = () => {
                 </div>
               </div>
               <div className=''>
-                <p className='bg-[#e4e2e2] text-2xl text-center rounded-md my-2'>Badges</p>
+                <p className='bg-[#e4e2e2] text-2xl text-center rounded-md'>Badges</p>
                 <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
                   {badges.map((badge) => (
                     <div key={badge.id} className='mx-auto flex'>
@@ -100,33 +86,17 @@ const Languages = () => {
 
           <div className='bg-[#ebe7de5b] mx-auto rounded-md border shadow-lg w-11/12'>
             <p className='text-2xl text-center m-3 p-2 bg-[#e4e2e2] rounded-md'>Progress</p>
-
-            {/* Carousel for small and medium screens */}
+            
             <div className="md:hidden flex flex-col justify-center mt-8 md:mt-24">
               <div className="overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4" style={{ scrollBehavior: 'smooth' }}>
                 <div className="flex space-x-4 justify-start items-center">
-                  <Carousel progress={progress} /> {/* Pass progress as props */}
+                  <Carousel progress={progress} />
                 </div>
               </div>
             </div>
 
-            {/* Grid layout for large screens */}
             <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:mt-8 lg:mt-8`}>
-              {progress.map((item, index) => (
-                <div key={index} className="text-center">
-                  <div
-                    className="radial-progress bg-[#e4e2e2] text-primary-content border-[#e4e2e2] border-4 mx-auto"
-                    style={{ 
-                      "--value": animatedProgress[index], 
-                      "transition": "var(--value) 5s ease"
-                    }}
-                    role="progressbar"
-                  >
-                    {animatedProgress[index]}%
-                  </div>
-                  <p className='text-xl mt-4'>{item.label}</p>
-                </div>
-              ))}
+              <Progress progress={progress} />
             </div>
           </div>
         </div>

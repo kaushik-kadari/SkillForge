@@ -9,8 +9,8 @@ import { VscFeedback } from "react-icons/vsc";
 import { FaStar } from 'react-icons/fa';
 
 const Content = () => {
-  const [showContent, setShowContent] = useState(false);
-  const [showVideo, setShowVideo] = useState(true);
+  const [showContent, setShowContent] = useState(true);
+  const [showVideo, setShowVideo] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -26,21 +26,18 @@ const Content = () => {
   const [ratings, setRatings] = useState(Array(questions.length).fill(0));
   const [hovered, setHovered] = useState(Array(questions.length).fill(null));
 
-  // Handle star click
   const handleRating = (index, value) => {
     const newRatings = [...ratings];
     newRatings[index] = value;
     setRatings(newRatings);
   };
 
-  // Handle hover state
   const handleHover = (index, value) => {
     const newHovered = [...hovered];
     newHovered[index] = value;
     setHovered(newHovered);
   };
 
-  // Reset hover state
   const handleHoverLeave = (index) => {
     const newHovered = [...hovered];
     newHovered[index] = null; 
@@ -204,12 +201,12 @@ const Content = () => {
                 <FaStar
                   key={starValue}
                   size={30}
-                  onClick={() => handleRating(index, starValue)} // Set rating on click
-                  onMouseEnter={() => handleHover(index, starValue)} // Hover effect
-                  onMouseLeave={() => handleHoverLeave(index)} // Reset hover on leave
+                  onClick={() => handleRating(index, starValue)}
+                  onMouseEnter={() => handleHover(index, starValue)}
+                  onMouseLeave={() => handleHoverLeave(index)}
                   className={`cursor-pointer transition-all duration-200 ${
                     (hovered[index] || ratings[index]) >= starValue
-                      ? "text-[#292929] scale-110"  // Star fills and slightly enlarges
+                      ? "text-[#292929] scale-110" 
                       : "text-gray-300"
                   }`}
                 />

@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Frontend from './pages/Topics/Frontend.jsx';
 import Languages from './pages/Topics/Languages.jsx';

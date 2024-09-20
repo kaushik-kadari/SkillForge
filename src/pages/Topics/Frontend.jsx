@@ -2,10 +2,9 @@ import React from 'react';
 import { ImFire } from "react-icons/im";
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel';
-import { useEffect,useState } from 'react';
+import Progress from '../../components/Progress';
 
 const Frontend = () => {
-  // Define topics and badges data
   const topics = [
     { path: "/html", label: "HTML" },
     { path: "/css", label: "CSS" },
@@ -34,18 +33,6 @@ const Frontend = () => {
   ];
 
   const heading = "Frontend";
-
-  const [animatedProgress, setAnimatedProgress] = useState(
-    progress.map(() => 0) 
-  );
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setAnimatedProgress(progress.map(item => item.value));
-    }, 500); 
-
-    return () => clearTimeout(timeoutId); 
-  }, [progress]);
 
   return (
     <div>
@@ -82,30 +69,16 @@ const Frontend = () => {
         </div>
         <div className="bg-[#ebe7de5b] w-11/12 mx-auto rounded-md border shadow-lg p-2">
           <p className='text-2xl text-center m-2 p-2 bg-[#e4e2e2] rounded-md'>Progress</p>
-          {/* Carousel for small and medium screens */}
           <div className="md:hidden flex flex-col justify-center mt-8 md:mt-24">
               <div className="overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4" style={{ scrollBehavior: 'smooth' }}>
                 <div className="flex space-x-4 justify-start items-center">
-                  <Carousel progress={progress} /> {/* Pass progress as props */}
+                  <Carousel progress={progress} />
                 </div>
               </div>
             </div>
-            {/* Grid layout for large screens */}
+            
             <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:mt-8 lg:mt-8`}>
-              {progress.map((item, index) => (
-                <div key={index} className="text-center">
-                    <div
-                    className="radial-progress bg-[#e4e2e2] text-primary-content border-[#e4e2e2] border-4 mx-auto"
-                    style={{ 
-                      "--value": animatedProgress[index],
-                    }}
-                    role="progressbar"
-                     >
-                    {animatedProgress[index]}%
-                  </div>
-                  <p className='text-xl mt-4'>{item.label}</p>
-                </div>
-              ))}
+              <Progress progress={progress} />
             </div>
         </div>
       </div>

@@ -8,7 +8,6 @@ function Topic({ topics }) {
         <h1 className="bg-[#e4e2e2] text-2xl text-center rounded-md my-2">
           Topics
         </h1>
-        {/* Container for topics list with a max height and scroll */}
         <div className="flex flex-col md:space-y-12 space-y-8 my-5 max-h-[60vh] overflow-y-scroll">
           {topics.map((topic, index) => (
             <Link key={index} to={topic.path} className="text-xl text-center">
