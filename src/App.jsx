@@ -10,6 +10,7 @@ import MachineLearning from './pages/Topics/MachineLearning.jsx';
 import Aptitude from './pages/Topics/Aptitude.jsx';
 import Topic from './components/Topic.jsx';
 import Content from './components/Content.jsx';
+import GenerateContent from './components/GenerateContent.jsx';
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/aptitude" element={<Aptitude />} />
             <Route path="/topic" element={<Topic />} />
             <Route path="/content" element={<Content />} />
+            <Route path="/generate-content" element={<GenerateContent />} />
           </Routes>
 
           

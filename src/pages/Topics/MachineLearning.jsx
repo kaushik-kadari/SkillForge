@@ -1,28 +1,24 @@
 import React from 'react'
-import Carousel from "../../components/Carousel.jsx";
-import { Link } from 'react-router-dom';
-import { ImFire } from 'react-icons/im';
-import { useEffect,useState } from 'react';
 import Topic from '../../components/Topic.jsx';
 
 function MachineLearning() {
   const topics = [
-    { path: "/introduction", label: "Introduction to Machine Learning" },
-    { path: "/data-preprocessing", label: "Data Preprocessing" },
-    { path: "/supervised-learning", label: "Supervised Learning" },
-    { path: "/linear-regression", label: "Linear Regression" },
-    { path: "/logistic-regression", label: "Logistic Regression" },
-    { path: "/decision-trees", label: "Decision Trees" },
-    { path: "/random-forest", label: "Random Forest" },
-    { path: "/svm", label: "Support Vector Machines (SVM)" },
-    { path: "/naive-bayes", label: "Naive Bayes" },
-    { path: "/k-nearest-neighbors", label: "K-Nearest Neighbors (KNN)" },
-    { path: "/unsupervised-learning", label: "Unsupervised Learning" },
-    { path: "/clustering", label: "Clustering (e.g., K-Means)" },
-    { path: "/dimensionality-reduction", label: "Dimensionality Reduction (e.g., PCA)" },
-    { path: "/model-evaluation", label: "Model Evaluation and Validation" },
-    { path: "/hyperparameter-tuning", label: "Hyperparameter Tuning" },
-    { path: "/deployment", label: "Model Deployment" }
+    { path: "/introduction", label: "Introduction to Machine Learning", subject:"Machine Learning" },
+    { path: "/data-preprocessing", label: "Data Preprocessing", subject:"Machine Learning" },
+    { path: "/supervised-learning", label: "Supervised Learning", subject:"Machine Learning" },
+    { path: "/linear-regression", label: "Linear Regression", subject:"Machine Learning" },
+    { path: "/logistic-regression", label: "Logistic Regression", subject:"Machine Learning" },
+    { path: "/decision-trees", label: "Decision Trees", subject:"Machine Learning" },
+    { path: "/random-forest", label: "Random Forest", subject:"Machine Learning" },
+    { path: "/svm", label: "Support Vector Machines (SVM)", subject:"Machine Learning" },
+    { path: "/naive-bayes", label: "Naive Bayes", subject:"Machine Learning" },
+    { path: "/k-nearest-neighbors", label: "K-Nearest Neighbors (KNN)", subject:"Machine Learning" },
+    { path: "/unsupervised-learning", label: "Unsupervised Learning", subject:"Machine Learning" },
+    { path: "/clustering", label: "Clustering (e.g., K-Means)", subject:"Machine Learning" },
+    { path: "/dimensionality-reduction", label: "Dimensionality Reduction (e.g., PCA)", subject:"Machine Learning" },
+    { path: "/model-evaluation", label: "Model Evaluation and Validation", subject:"Machine Learning" },
+    { path: "/hyperparameter-tuning", label: "Hyperparameter Tuning", subject:"Machine Learning" },
+    { path: "/deployment", label: "Model Deployment", subject:"Machine Learning" },
   ];
 
   return (
