@@ -9,8 +9,8 @@ const Dashboard = () => {
     { path: "/languages", label: "Languages", index: 0 },
     { path: "/frontend", label: "Frontend", index: 1 },
     { path: "/backend", label: "Backend", index: 2 }, 
-    { path: "/machine-learning", label: "Machine Learning", index: 3 }, 
-    { path: "/aptitude", label: "Aptitude", index: 4 }, 
+    { path: "/topics/machine Learning", label: "Machine Learning", index: 3 }, 
+    { path: "/topics/aptitude", label: "Aptitude", index: 4 }, 
   ];
 
   const progress = [

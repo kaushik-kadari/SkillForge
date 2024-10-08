@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import GenerateContent from "./GenerateContent";
+import { useParams } from "react-router-dom";
 
 import { AiOutlineRead } from "react-icons/ai";
 import { FiPlayCircle } from "react-icons/fi";
@@ -18,8 +19,9 @@ const Content = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const location = useLocation();
 
-  const subject = location?.state?.subject || "Subject";
-  const topic = location?.state?.topic || "Topic";
+  let { subject, topic } = useParams();
+
+  subject = subject.toUpperCase();
 
   const questions = [
     "How would you rate the content quality?",
@@ -121,7 +123,7 @@ const Content = () => {
             {topic}
           </h1>
           <p className="text-wrap p-10">
-            <GenerateContent topic={topic} />
+            <GenerateContent topic={topic} subject={subject} />
           </p>
         </div>
       )}

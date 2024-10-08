@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import "./Content.css";
 
 
-const GenerateContent = ({ topic }) => {
+const GenerateContent = ({ topic, subject }) => {
   const apiKey = "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";
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
   const [content, setContent] = useState("");
@@ -15,7 +15,7 @@ const GenerateContent = ({ topic }) => {
       messages: [
         {
           role: "user",
-          content: `Explain about ${topic} in Detailed Format. 
+          content: `Explain about ${topic} from ${subject} in Detailed Format 5000 words. 
             Guidelines for Generating PDF Content:
             Avoid including the main heading.
             Ensure the content is clear, concise, and formatted for easy readability.

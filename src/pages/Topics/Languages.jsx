@@ -6,18 +6,18 @@ import Progress from '../../components/Progress.jsx';
 
 const Languages = () => {
   const topics = [
-    { path: "/c", label: "C" },
-    { path: "/cplusplus", label: "C++" },
-    { path: "/csharp", label: "C#" },
-    { path: "/go", label: "Go" },
-    { path: "/java", label: "Java" },
-    { path: "/javascript", label: "JavaScript" },
-    { path: "/kotlin", label: "Kotlin" },
-    { path: "/php", label: "PHP" },
-    { path: "/python", label: "Python" },
-    { path: "/ruby", label: "Ruby" },
-    { path: "/swift", label: "Swift" },
-    { path: "/typescript", label: "TypeScript" }
+    { path: "/topics/c", label: "C" },
+    { path: "/topics/cplusplus", label: "C++" },
+    { path: "/topics/csharp", label: "C#" },
+    { path: "/topics/go", label: "Go" },
+    { path: "/topics/java", label: "Java" },
+    { path: "/topics/javascript", label: "JavaScript" },
+    { path: "/topics/kotlin", label: "Kotlin" },
+    { path: "/topics/php", label: "PHP" },
+    { path: "/topics/python", label: "Python" },
+    { path: "/topics/ruby", label: "Ruby" },
+    { path: "/topics/swift", label: "Swift" },
+    { path: "/topics/typescript", label: "TypeScript" }
   ];
   
   const progress = [
