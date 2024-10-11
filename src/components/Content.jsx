@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import GenerateContent from "./GenerateContent";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { AiOutlineRead } from "react-icons/ai";
 import { FiPlayCircle } from "react-icons/fi";
@@ -21,7 +22,7 @@ const Content = () => {
 
   let { subject, topic } = useParams();
 
-  subject = subject.toUpperCase();
+  const Subject = subject.toUpperCase();
 
   const questions = [
     "How would you rate the content quality?",
@@ -70,7 +71,7 @@ const Content = () => {
     <div className="grid grid-cols-3 p-7 gap-5 items-start">
       <div className="w-11/12 mx-auto bg-[#ebe7de5b] p-2 rounded-md border shadow-lg">
         <h1 className="text-2xl font-bold text-center my-2 underline border-b-2 pb-4 cursor-pointer">
-          {subject}
+          <Link to={`/topics/${subject}`}>{Subject}</Link>
         </h1>
         <p className="text-xl text-center font-semibold my-4">{topic} </p>
         <div className="flex flex-col md:space-y-5 space-y-8 p-1">
@@ -122,9 +123,9 @@ const Content = () => {
           <h1 className="text-2xl font-bold text-center mt-2">
             {topic}
           </h1>
-          <p className="text-wrap p-10">
+          <div className="text-wrap p-10">
             <GenerateContent topic={topic} subject={subject} />
-          </p>
+          </div>
         </div>
       )}
 

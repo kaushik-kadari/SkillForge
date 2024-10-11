@@ -6,13 +6,12 @@ import Progress from '../../components/Progress';
 
 const Frontend = () => {
   const topics = [
-    { path: "/html", label: "HTML" },
-    { path: "/css", label: "CSS" },
-    { path: "/javascript", label: "JAVASCRIPT" },
-    { path: "/react-js", label: "REACT.JS" },
-    { path: "/next-js", label: "NEXT.JS" },
-    { path: "/tailwind-css", label: "TAILWIND.CSS" }
-  ];
+    { path: "/topics/html", label: "HTML" },
+    { path: "/topics/css", label: "CSS" },
+    { path: "/topics/javascript", label: "JAVASCRIPT" },
+    { path: "/topics/react-js", label: "REACT.JS" },
+    { path: "/topics/next-js", label: "NEXT.JS" },
+    { path: "/topics/tailwind-css", label: "TAILWIND.CSS" }  ];
 
   const progress = [
     { label: "HTML", value: 10 },

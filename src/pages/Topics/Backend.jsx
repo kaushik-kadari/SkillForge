@@ -8,12 +8,12 @@ const Backend = () => {
   const heading = "Backend";
 
   const topics = [
-    { path: "/flask", label: "Flask" },
-    { path: "/django", label: "Django" },
-    { path: "/node-js", label: "Node.js" },
-    { path: "/express", label: "Express.js" },
-    { path: "/spring-boot", label: "Spring Boot" },
-    { path: "/fastapi", label: "FastAPI" },
+    { path: "/topics/flask", label: "Flask" },
+    { path: "/topics/django", label: "Django" },
+    { path: "/topics/node-js", label: "Node.js" },
+    { path: "/topics/express-js", label: "Express.js" },
+    { path: "/topics/spring-boot", label: "Spring Boot" },
+    { path: "/topics/fastapi", label: "FastAPI" },
   ];
 
   const progress = [
