@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Content from "./Content";
+import Content from "../Content/Content";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 

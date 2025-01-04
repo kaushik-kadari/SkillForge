@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import GenerateContent from "./GenerateContent";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -11,6 +10,14 @@ import { BiTargetLock } from "react-icons/bi";
 import { BsChatRightText } from "react-icons/bs";
 import { VscFeedback } from "react-icons/vsc";
 import { FaStar } from "react-icons/fa";
+import Carousel from '../Carousel/Carousel';
+import GenerateContent from '../GenerateContent/GenerateContent';
+import Quiz from '../Quiz/quizGenerator';
+import Navbar from '../Navbar/Navbar';
+import Progress from '../Progress/Progress';
+import Topic from '../Topic/Topic';
+import ChatAi from '../ChatAi/ChatAi';
+import './Content.css';
 
 const Content = () => {
   const [showContent, setShowContent] = useState(true);
@@ -105,7 +112,7 @@ const Content = () => {
             } p-2 rounded-md hover:bg-[#e4e2e2] transition-all duration-300`}
             onClick={() => handleClick("chat")}
           >
-            <BsChatRightText style={{ opacity: "0.5" }} /> Chat with PDF
+            <BsChatRightText style={{ opacity: "0.5" }} /> AI Assistant
           </p>
           <p
             className={`text-xl flex items-center gap-3 cursor-pointer ${
@@ -149,13 +156,13 @@ const Content = () => {
 
       {showQuiz && (
         <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
-          <div>Quiz</div>
+          <Quiz subject={subject} topic={topic}/>
         </div>
       )}
 
       {showChat && (
         <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
-          <div>Chat</div>
+          <ChatAi subject={subject} topic={topic}/>
         </div>
       )}
 

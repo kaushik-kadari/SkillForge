@@ -1,8 +1,8 @@
 import React from 'react';
-import Carousel from "../components/Carousel.jsx";
+import Carousel from "../components/Carousel/Carousel";
 import { Link } from 'react-router-dom';
 import { ImFire } from 'react-icons/im'; 
-import Progress from '../components/Progress.jsx';
+import Progress from '../components/Progress/Progress';
 
 const Dashboard = () => {
   const topics = [

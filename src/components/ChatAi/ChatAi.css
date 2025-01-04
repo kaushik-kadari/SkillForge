@@ -1,0 +1,116 @@
+
+  /* Chat window with scroll */
+  .chat-window {
+    height: 40vh;
+    overflow-y: auto;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+  
+  /* Chat messages */
+  .chat-message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    word-wrap: break-word;
+    max-width: 80%;
+  }
+  
+  /* User message styling */
+  .user-message {
+    background-color: #f1f1f1;
+    align-self: flex-end;
+    margin-left: auto;
+    color: #333;
+    border-radius: 0px 8px 0 8px;
+}
+
+/* AI message styling */
+.ai-message {
+    background-color: #f1f1f1;
+    align-self: flex-start;
+    color: #333;
+    border-radius: 0px 8px 0 8px;
+  }
+  
+  /* Loading text */
+  .loading-text {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+  }
+  
+  /* Form styling */
+  .chat-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    outline: none !important;
+  }
+
+  .chat-input:focus {
+    outline: none !important;
+  }
+
+  textarea:focus, input:focus {
+    border-color: black;
+  }
+  
+  .chat-submit-btn {
+    padding: 10px;
+    background-color: #0e0e0e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .chat-submit-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+  
+  .chat-submit-btn:hover:not(:disabled) {
+    background-color: #333;
+  }
+  
+  @media (max-width: 768px) {
+    .chat-ai-container {
+      padding: 15px;
+      margin: 10px;
+    }
+  
+    .chat-window {
+      max-height: 300px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .chat-ai-container {
+      padding: 10px;
+      margin: 5px;
+    }
+  
+    .chat-input {
+      padding: 10px;
+      font-size: 0.85rem;
+    }
+  
+    .chat-submit-btn {
+      padding: 8px;
+      font-size: 0.85rem;
+    }
+  }
+  

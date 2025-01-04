@@ -1,8 +1,8 @@
 import React from 'react';
 import { ImFire } from "react-icons/im";
 import { Link } from 'react-router-dom';
-import Carousel from '../../components/Carousel.jsx';
-import Progress from '../../components/Progress.jsx';
+import Carousel from '../../components/Carousel/Carousel.jsx';
+import Progress from '../../components/Progress/Progress.jsx';
 
 const Languages = () => {
   const topics = [

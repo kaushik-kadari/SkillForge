@@ -1,8 +1,8 @@
 import React from 'react';
 import { ImFire } from "react-icons/im";
 import { Link } from 'react-router-dom';
-import Carousel from '../../components/Carousel';
-import Progress from '../../components/Progress';
+import Carousel from '../../components/Carousel/Carousel';
+import Progress from '../../components/Progress/Progress';
 
 const Frontend = () => {
   const topics = [

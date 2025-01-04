@@ -1,15 +1,17 @@
 import React from 'react';
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar';
 import LandingPage from './pages/LandingPage';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Frontend from './pages/Topics/Frontend.jsx';
 import Languages from './pages/Topics/Languages.jsx';
 import Backend from './pages/Topics/Backend.jsx';
-import Topic from './components/Topic.jsx';
-import Content from './components/Content.jsx';
-import GenerateContent from './components/GenerateContent.jsx';
+import Topic from './components/Topic/Topic';
+import Content from './components/Content/Content';
+import GenerateContent from './components/GenerateContent/GenerateContent';
 import NotFound from './pages/NotFound.jsx';
+import Carousel from './components/Carousel/Carousel';
+import Progress from './components/Progress/Progress';
 
 const App = () => {
   return (

@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CgProfile } from 'react-icons/cg';
 import { Link } from 'react-router-dom';
+import Content from '../Content/Content';
+import GenerateContent from '../GenerateContent/GenerateContent';
+import Progress from '../Progress/Progress';
+import Topic from '../Topic/Topic';
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -156,6 +160,7 @@ const Navbar = () => {
   </nav>
 
   );
+
 };
 
 export default Navbar;

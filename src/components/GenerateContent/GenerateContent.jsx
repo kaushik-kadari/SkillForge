@@ -1,8 +1,10 @@
 import Groq from "groq-sdk";
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { addContent, getContent } from "../services/contentService";
-import "./Content.css";
+import { addContent, getContent } from "../../services/contentService";
+import Content from '../Content/Content';
+import Topic from '../Topic/Topic';
+import Progress from '../Progress/Progress';
 
 const GenerateContent = ({ topic, subject }) => {
   const apiKey = "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";
@@ -45,7 +47,7 @@ const GenerateContent = ({ topic, subject }) => {
   const addContentHandler = async (subject, subtopic, content) => {
     try {
       const response = await addContent(subject, subtopic, content);
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -62,7 +64,7 @@ const GenerateContent = ({ topic, subject }) => {
       } else {
         setContent(response.content);
       }
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       console.error(error);
     }
