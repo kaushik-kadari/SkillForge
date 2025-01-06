@@ -10,7 +10,7 @@ function Topic() {
   const navigate = useNavigate();
   const renderContent = (topic, subject) => {
     // console.log(topic);
-    navigate("/content/" + subject + "/" + topic);
+    navigate("/content/" + subject + "/" + topic + "/content");
   }
 
   const topics = {
@@ -446,7 +446,7 @@ function Topic() {
         { path: "/expressjs/testing", label: "Testing" },
       ],
     },
-    springboot: {
+    "spring-boot": {
       sub: [
         { path: "/springboot/getting_started", label: "Getting Started" },
         { path: "/springboot/mvc", label: "Spring MVC" },

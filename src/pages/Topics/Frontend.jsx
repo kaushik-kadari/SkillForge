@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImFire } from "react-icons/im";
+import { HiBadgeCheck } from "react-icons/hi";
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel';
 import Progress from '../../components/Progress/Progress';
@@ -59,7 +59,7 @@ const Frontend = () => {
                 {badges.map((badge) => (
                   <div key={badge.id} className='mx-auto flex '>
                     <p className='text-xl'>{badge.count}</p>
-                    <ImFire className='text-xl ml-2'/>
+                    <HiBadgeCheck className='text-xl ml-2'/>
                   </div>
                 ))}
               </div>

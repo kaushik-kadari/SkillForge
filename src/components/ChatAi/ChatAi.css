@@ -21,7 +21,7 @@
   
   /* User message styling */
   .user-message {
-    background-color: #f1f1f1;
+    background-color: #e3e1e1;
     align-self: flex-end;
     margin-left: auto;
     color: #333;
@@ -64,7 +64,8 @@
   }
 
   textarea:focus, input:focus {
-    border-color: black;
+    border: none;
+    box-shadow: 0 0 5px rgb(0, 0, 0) !important;
   }
   
   .chat-submit-btn {
@@ -82,9 +83,6 @@
     cursor: not-allowed;
   }
   
-  .chat-submit-btn:hover:not(:disabled) {
-    background-color: #333;
-  }
   
   @media (max-width: 768px) {
     .chat-ai-container {

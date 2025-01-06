@@ -3,6 +3,10 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 import { AiOutlineRead } from "react-icons/ai";
 import { FiPlayCircle } from "react-icons/fi";
@@ -10,26 +14,42 @@ import { BiTargetLock } from "react-icons/bi";
 import { BsChatRightText } from "react-icons/bs";
 import { VscFeedback } from "react-icons/vsc";
 import { FaStar } from "react-icons/fa";
-import Carousel from '../Carousel/Carousel';
-import GenerateContent from '../GenerateContent/GenerateContent';
-import Quiz from '../Quiz/quizGenerator';
-import Navbar from '../Navbar/Navbar';
-import Progress from '../Progress/Progress';
-import Topic from '../Topic/Topic';
-import ChatAi from '../ChatAi/ChatAi';
-import './Content.css';
+import Carousel from "../Carousel/Carousel";
+import GenerateContent from "../GenerateContent/GenerateContent";
+import Quiz from "../Quiz/quizGenerator";
+import Navbar from "../Navbar/Navbar";
+import Progress from "../Progress/Progress";
+import Topic from "../Topic/Topic";
+import ChatAi from "../ChatAi/ChatAi";
+import "./Content.css";
+import { getVideoLink, addVideoLink } from "../../services/contentService";
 
 const Content = () => {
-  const [showContent, setShowContent] = useState(true);
-  const [showVideo, setShowVideo] = useState(false);
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
   const location = useLocation();
-
   let { subject, topic } = useParams();
-
   const Subject = subject.toUpperCase();
+  const [videoLink, setVideoLink] = useState("");
+
+  const API_KEY = "AIzaSyD1BoZKkwFHlc67eoW8e56c06Zb7x2vYEk"; // yt key
+
+  const Content = location.pathname.split("/");
+  const navigate = useNavigate();
+
+  const [showContent, setShowContent] = useState(
+    Content[4] === "content" ? true : false
+  );
+  const [showVideo, setShowVideo] = useState(
+    location.pathname === `/content/${subject}/${topic}/video` ? true : false
+  );
+  const [showQuiz, setShowQuiz] = useState(
+    location.pathname === `/content/${subject}/${topic}/quiz` ? true : false
+  );
+  const [showChat, setShowChat] = useState(
+    location.pathname === `/content/${subject}/${topic}/chat` ? true : false
+  );
+  const [showFeedback, setShowFeedback] = useState(
+    location.pathname === `/content/${subject}/${topic}/feedback` ? true : false
+  );
 
   const questions = [
     "How would you rate the content quality?",
@@ -62,8 +82,34 @@ const Content = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Feedback submitted:", ratings);
+
+    const feedbacks = questions.map((question, index) => ({
+      question,
+      rating: ratings[index],
+    }));
+
+    console.log("Feedback submitted:", feedbacks);
+
+    // Reset the ratings and hovered state
     setRatings(Array(questions.length).fill(0));
+    setHovered(Array(questions.length).fill(null));
+
+    const name = localStorage.getItem("name");
+    const email = localStorage.getItem("email");
+
+    // Send the feedback data to the server
+    axios
+      .post("http://localhost:3000/api/add-feedback", {
+        name,
+        email,
+        subject,
+        topic,
+        feedbacks,
+      })
+      .then((res) => {
+        toast.success("Feedback submitted successfully!");
+        // console.log(res.data);
+      });
   };
 
   const handleClick = (type) => {
@@ -72,7 +118,58 @@ const Content = () => {
     setShowQuiz(type === "quiz");
     setShowChat(type === "chat");
     setShowFeedback(type === "feedback");
+
+    navigate(`/content/${subject}/${topic}/${type}`);
   };
+
+  const generateVideoLink = async (subject, topic) => {
+    try {
+      // console.log(subject, topic);
+      const searchQuery = `${subject} ${topic}`;
+      const maxResults = 1; // Adjust as needed
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
+        searchQuery
+      )}&key=${API_KEY}&type=video&maxResults=${maxResults}&order=relevance`;
+
+      const response = await axios.get(url);
+      // console.log("vid id", response.data.items[0].id.videoId);
+      return "https://www.youtube.com/embed/" + response.data.items[0].id.videoId;
+    } catch (error) {
+      console.error("Error generating video link:", error);
+      return error;
+    }
+  };
+
+  useEffect(() => {
+    handleVideoLink();
+  }, []);
+
+  const handleVideoLink = async () => {
+    try {
+      // console.log("handleVideoLink");
+      const response = await getVideoLink(subject, topic);
+      // console.log(response);
+      if (response.status === 404) {
+        const videoLink = await generateVideoLink(subject, topic);
+        setVideoLink(videoLink);
+        const res = await addVideoLink(subject, topic, videoLink);
+        // console.log(res);
+      } else {
+        setVideoLink(response.videoLink);
+      }
+    } catch (error) {
+      console.error("Error fetching video link:", error);
+    }
+  };
+
+  useEffect(() => {
+    // handleVideoLink();
+    setShowContent(Content[4] === "content" ? true : false);
+    setShowVideo(Content[4] === "video" ? true : false);
+    setShowQuiz(Content[4] === "quiz" ? true : false);
+    setShowChat(Content[4] === "chat" ? true : false);
+    setShowFeedback(Content[4] === "feedback" ? true : false);
+  }, [location.pathname]);
 
   return (
     <div className="grid grid-cols-3 p-7 gap-5 items-start">
@@ -126,10 +223,8 @@ const Content = () => {
       </div>
 
       {showContent && (
-        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-2 rounded-md border shadow-lg min-h-[100vh] max-h-[100vh] overflow-y-scroll ">
-          <h1 className="text-2xl font-bold text-center mt-2">
-            {topic}
-          </h1>
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-2 rounded-md border shadow-lg min-h-[80vh] max-h-[80vh] overflow-y-scroll">
+          <h1 className="text-2xl font-bold text-center mt-2">{topic}</h1>
           <div className="text-wrap p-10">
             <GenerateContent topic={topic} subject={subject} />
           </div>
@@ -137,37 +232,36 @@ const Content = () => {
       )}
 
       {showVideo && (
-        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[80vh]">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-2">Machine Learning</h1>
+            <h1 className="text-2xl font-bold mb-2">{topic}</h1>
             <p>Reference Video</p>
           </div>
           <iframe
             className="w-full h-[60vh] rounded-lg mx-auto mt-10 border border-black shadow-lg"
-            src="https://www.youtube.com/embed/ukzFI9rgwfU?si=qNO_N3K5G0GHwP3J"
+            src={videoLink}
             title="YouTube video player"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen
           ></iframe>
         </div>
       )}
 
       {showQuiz && (
-        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
-          <Quiz subject={subject} topic={topic}/>
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[80vh]">
+          <Quiz subject={subject} topic={topic} />
         </div>
       )}
 
       {showChat && (
-        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
-          <ChatAi subject={subject} topic={topic}/>
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[80vh]">
+          <ChatAi subject={subject} topic={topic} />
         </div>
       )}
 
       {showFeedback && (
-        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[70vh]">
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[80vh]">
           <h1 className="text-2xl font-bold mb-2 text-center">
             Machine Learning
           </h1>
@@ -198,7 +292,7 @@ const Content = () => {
             ))}
             <button
               type="submit"
-              className="bg-[#292929] text-white font-bold py-2 px-4 rounded-md mx-auto"
+              className="bg-[#292929] hover:bg-[#676767] text-white font-bold py-2 px-4 rounded-md mx-auto"
             >
               Submit Feedback
             </button>

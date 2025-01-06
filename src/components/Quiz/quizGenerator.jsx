@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Groq from "groq-sdk";
+import { LuBadgeCheck } from "react-icons/lu";
+import { LuBadgeX } from "react-icons/lu";
+import { FallingLines } from "react-loader-spinner";
+
 
 const Quiz = ({ subject, topic }) => {
   const sub = subject.toUpperCase();
@@ -10,6 +14,8 @@ const Quiz = ({ subject, topic }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [quizOver, setQuizOver] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [fetched, setFetched] = useState(false);
 
   const apiKey = "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";
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
@@ -46,13 +52,17 @@ const Quiz = ({ subject, topic }) => {
         // console.log(quizArray);
         // console.log(typeof quizArray);
         setQuestions(quizArray);
+        setFetched(true);
       } catch (error) {
-        console.error("Failed to fetch quiz questions:", error);
+        // console.error("Failed to fetch quiz questions", error);
+        if(!fetched) fetchQuestions();
       }
     };
 
-    fetchQuestions();
-  }, [subject, topic]);
+    if (started && !fetched) {
+      // fetchQuestions();
+    }
+  }, [subject, topic, started]);
 
   const handleAnswer = (option) => {
     setSelectedOptions((prev) => ({
@@ -82,86 +92,140 @@ const Quiz = ({ subject, topic }) => {
     }
   };
 
+  const handleStart = () => {
+    setStarted(true);
+  };
+
   if (quizOver) {
     return (
-      <h2>
-        Your score: {score} / {questions.length}
-      </h2>
+      <div className="flex flex-col">
+        <h2 className="text-4xl font-bold text-center">
+          {top}
+        </h2>
+        <div className="min-h-[50vh] flex flex-col items-center justify-center ">
+          {score === 5 ? (
+            <LuBadgeCheck size={150} />
+          ) : (
+            <LuBadgeX size={150} />
+          )}
+          <p className="text-4xl mt-8">
+            {score === 5 ? "Congratulations!! " : ""}
+            You scored {score} out of {questions.length}!
+          </p>
+          <button
+            className=" text-black font-bold p-4 rounded-md mt-8 hover:text-white transition-all border-solid border-black border-2 text-sm hover:bg-[#676767]"
+            onClick={() => window.location.reload()}
+          >
+            Take Quiz Again
+          </button>
+        </div>
+      </div>
     );
   }
 
-  if (questions.length === 0) {
-    return <p>Loading quiz...</p>;
+  if (questions.length === 0 || started) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
+        {/* <p className="text-3xl font-semibold my-4">
+          Loading Quiz
+        </p> */}
+        <FallingLines
+          color="black"
+          width="150"
+          visible={true}
+          ariaLabel="falling-circles-loading"
+        />
+        <p className="text-base text-gray-500 font-light my-4">
+          Loading Quiz...
+        </p>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center">
-        {sub} - {top}
+      <h2 className="text-3xl font-bold text-center">
+        {top}
       </h2>
       <div className="mt-4 p-4">
-        <p className="text-xl mb-4 ">
-          Question {currentQuestion + 1}: {questions[currentQuestion].question}
-        </p>
-        <div>
-          {questions[currentQuestion].options.map((option, index) => (
-            <div className="flex items-center text-lg" key={index}>
-              <label htmlFor={option} className="cursor-pointer">
-                <input
-                  id={option}
-                  type="radio"
-                  name="answer"
-                  onChange={() => handleAnswer(option)}
-                  className="mr-2 focus:ring-0 "
-                  style={{
-                    backgroundColor:
-                      selectedOptions[currentQuestion] === option
-                        ? "black"
-                        : "",
-                  }}
-                  checked={selectedOptions[currentQuestion] === option}
-                />
-                {option}
-              </label>
+        {!started && (
+          <div className="flex justify-center">
+            <button
+              className="bg-black text-sm hover:bg-[#676767] text-white font-bold py-2 px-4 rounded transition-all"
+              onClick={handleStart}
+            >
+              Start Quiz
+            </button>
+          </div>
+        )}
+        {started && (
+          <div>
+            <p className="text-xl mb-4 font-semibold">
+             {currentQuestion + 1}) {questions[currentQuestion].question}
+            </p>
+            <div>
+              {questions[currentQuestion].options.map((option, index) => (
+                <div className="flex items-center text-lg" key={index}>
+                  <label htmlFor={option} className="cursor-pointer">
+                    <input
+                      id={option}
+                      type="radio"
+                      name="answer"
+                      onChange={() => handleAnswer(option)}
+                      className="mr-2 focus:ring-0 "
+                      style={{
+                        backgroundColor:
+                          selectedOptions[currentQuestion] === option
+                            ? "black"
+                            : "",
+                      }}
+                      checked={selectedOptions[currentQuestion] === option}
+                    />
+                    {option}
+                  </label>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="flex justify-between mt-4">
-          <button
-            className="bg-black hover:bg-black text-white font-bold py-2 px-4 rounded"
-            onClick={handlePreviousQuestion}
-          >
-            <i className="fas fa-arrow-left mr-2"></i> Previous
-          </button>
+            <div className="flex justify-between mt-4">
+              <button
+                className={`bg-black text-sm hover:bg-[#676767] text-white font-bold py-2 px-4 rounded ${
+                  currentQuestion === 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                onClick={handlePreviousQuestion}
+              >
+                Previous
+              </button>
 
-          {currentQuestion + 1 < questions.length && (
-            <button
-              className={`bg-black hover:bg-black text-white font-bold py-2 px-4 rounded ${
-                selectedOptions[currentQuestion] === undefined
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }`}
-              onClick={handleNextQuestion}
-              disabled={selectedOptions[currentQuestion] === undefined}
-            >
-              Save & Next <i className="fas fa-arrow-right ml-2"></i>
-            </button>
-          )}
+              {currentQuestion + 1 < questions.length && (
+                <button
+                  className={`bg-black text-sm hover:bg-[#676767] text-white font-bold py-2 px-4 rounded ${
+                    selectedOptions[currentQuestion] === undefined
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  onClick={handleNextQuestion}
+                  disabled={selectedOptions[currentQuestion] === undefined}
+                >
+                  Save & Next <i className="fas fa-arrow-right ml-2"></i>
+                </button>
+              )}
 
-          {currentQuestion + 1 === questions.length && (
-            <button
-            className={`bg-black hover:bg-black text-white font-bold py-2 px-4 rounded ${
-                selectedOptions[currentQuestion] === undefined
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }`}
-              onClick={handleNextQuestion}
-              disabled={selectedOptions[currentQuestion] === undefined}
-            >
-              Submit
-            </button>
-          )}
-        </div>
+              {currentQuestion + 1 === questions.length && (
+                <button
+                className={`bg-black text-sm hover:bg-[#676767] text-white font-bold py-2 px-4 rounded ${
+                    selectedOptions[currentQuestion] === undefined
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  onClick={handleNextQuestion}
+                  disabled={selectedOptions[currentQuestion] === undefined}
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

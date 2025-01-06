@@ -2,9 +2,7 @@ import Groq from "groq-sdk";
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { addContent, getContent } from "../../services/contentService";
-import Content from '../Content/Content';
-import Topic from '../Topic/Topic';
-import Progress from '../Progress/Progress';
+import { FallingLines } from "react-loader-spinner";
 
 const GenerateContent = ({ topic, subject }) => {
   const apiKey = "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";
@@ -73,6 +71,25 @@ const GenerateContent = ({ topic, subject }) => {
   useEffect(() => {
     getContentHandler(subject, topic);
   }, [subject, topic]);
+
+  if(content == "") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
+        {/* <p className="text-3xl font-semibold my-4">
+          Loading Content
+        </p> */}
+        <FallingLines
+          color="black"
+          width="150"
+          visible={true}
+          ariaLabel="falling-circles-loading"
+        />
+        <p className="text-base text-gray-500 font-light my-4">
+          Loading Content...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Groq from "groq-sdk";
 import "./ChatAi.css"; // Chatbot-specific styling
 import ReactMarkdown from "react-markdown";
+import { RiRobot3Line } from "react-icons/ri";
 
 const ChatAi = ({ subject, topic }) => {
   const apiKey = "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";
@@ -46,8 +47,10 @@ const ChatAi = ({ subject, topic }) => {
             content: `Imagine you are a professional ${subject} Assistant. 
             Dont say anything about the query which is out of context.
             You have explained the concept of ${topic}. A student has asked a question related to this: '${query}'. 
-            Provide a clear and short answer for this question in max of 100 words, ensuring it remains relevant to the ${topic} and ${subject} being discussed.
-            Do not add any additional context or explanation, and don’t answer the query if it's not related to the ${topic} and ${subject} being discussed.`,
+            Try to answer the question in short and clear manner. Unless the user asks to explain something in detail then 
+            Provide a clear answer for this question in max of 1000 words, ensuring it remains relevant to the ${topic} and ${subject} being discussed.
+            DO NOT ADD ANY ADDITIONAL CONTEXT OR EXPLANATION, AND STRICTLY FOLLOW THE ABOVE INSTRUCTIONS. 
+            IF THE QUERY IS NOT RELATED TO THE ${topic} AND ${subject} BEING DISCUSSED, DON'T ANSWER IT AT ALL.`
           },
         ],
         model: "llama3-8b-8192", // Model used for generating responses
@@ -71,7 +74,9 @@ const ChatAi = ({ subject, topic }) => {
 
   return (
     <div className="chat-ai-container">
-      <h2 className="text-2xl font-bold text-center mb-2">Ask AI About Your Content</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        Interact with our AI Assistant
+      </h2>
 
       {/* Chat window displaying all messages */}
       <div className="chat-window" ref={chatWindowRef}>
@@ -85,13 +90,18 @@ const ChatAi = ({ subject, topic }) => {
           )
         }
         {messages.map((message, index) => (
-          <div
-            key={index}
+          <div className="flex">
+            <p key={index}>{message.role === "ai" && (
+                <RiRobot3Line className="text-2xl mr-2" />
+            )}</p>
+          <p
+            key={index + message.role}
             className={`chat-message ${
               message.role === "user" ? "user-message" : "ai-message"
             }`}
           >
             <ReactMarkdown>{message.content}</ReactMarkdown>
+          </p>
           </div>
         ))}
         {loading && <p className="loading-text">AI is thinking...</p>}
@@ -108,7 +118,7 @@ const ChatAi = ({ subject, topic }) => {
           className="chat-input outline-none"
           required
         />
-        <button type="submit" className="chat-submit-btn" disabled={loading}>
+        <button type="submit" className="chat-submit-btn font-semibold hover:bg-[#676767]" disabled={loading}>
           {loading ? "Loading..." : "Ask AI"}
         </button>
       </form>
