@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../services/AuthService";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const login = localStorage.getItem("login");
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen ">
@@ -20,7 +21,7 @@ const LandingPage = () => {
           <button
             className="mt-6 px-8 py-3 border-2 border-black text-black font-semibold rounded hover:bg-black hover:text-white transition-all"
             onClick={() => {
-              login === "true" ? navigate("/dashboard") : navigate("/login");
+              isAuthenticated ? navigate("/dashboard") : navigate("/login");
             }}
           >
             Get Started
@@ -84,7 +85,7 @@ const LandingPage = () => {
       </section>
 
       {/* Call to Action Section */}
-      {login != "true" && (
+      {!isAuthenticated && (
         <section className="py-12 text-white bg-gradient-to-bl from-[#e9defa] to-[#fbfcdb]">
           <div className="container mx-auto text-center">
             <h4 className="text-3xl font-semibold text-black">

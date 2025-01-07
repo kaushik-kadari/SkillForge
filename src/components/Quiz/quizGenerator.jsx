@@ -60,7 +60,7 @@ const Quiz = ({ subject, topic }) => {
     };
 
     if (started && !fetched) {
-      // fetchQuestions();
+      fetchQuestions();
     }
   }, [subject, topic, started]);
 
@@ -113,7 +113,7 @@ const Quiz = ({ subject, topic }) => {
             You scored {score} out of {questions.length}!
           </p>
           <button
-            className=" text-black font-bold p-4 rounded-md mt-8 hover:text-white transition-all border-solid border-black border-2 text-sm hover:bg-[#676767]"
+            className=" text-black font-bold p-4 rounded-md mt-8 hover:text-white transition-all border-solid border-black border-2 text-sm hover:bg-black"
             onClick={() => window.location.reload()}
           >
             Take Quiz Again
@@ -123,7 +123,7 @@ const Quiz = ({ subject, topic }) => {
     );
   }
 
-  if (questions.length === 0 || started) {
+  if (questions.length === 0 && started) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
         {/* <p className="text-3xl font-semibold my-4">

@@ -18,14 +18,15 @@ import Signup from "./pages/Signup.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS
 import ProtectedRoute from "./ProtectedRoute";
+import { useAuth } from "./services/AuthService";
 
 const App = () => {
-  const login = localStorage.getItem("login");
+  const { isAuthenticated } = useAuth();
 
   return (
     <>
       <div className="min-h-screen flex flex-col">
-        {login === "true" && <Navbar />}
+        {isAuthenticated && <Navbar />}
 
         <ToastContainer
           position="top-center"
@@ -119,7 +120,7 @@ const App = () => {
           </Routes>
         </div>
 
-        {login === "true" && (
+        {isAuthenticated && (
           <footer className="py-3 bg-gray-100 shadow-xl border-t">
             <div className="container mx-auto text-center">
               <p>&copy; 2024 SkillForge. All rights reserved.</p>

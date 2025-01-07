@@ -18,10 +18,7 @@ const Login = () => {
       .post("http://localhost:3000/api/login", { email, password })
       .then((response) => {
         // console.log(response);
-        localStorage.setItem("login", "true");
-        localStorage.setItem("name", response.data.user.name);
-        localStorage.setItem("email", response.data.user.email);
-        // toast.success(response.data.message);
+        localStorage.setItem("token", response.data.token);
         window.location.href = "/dashboard";
       })
       .catch((error) => {

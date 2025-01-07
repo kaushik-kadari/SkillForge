@@ -5,6 +5,7 @@ import Content from '../Content/Content';
 import GenerateContent from '../GenerateContent/GenerateContent';
 import Progress from '../Progress/Progress';
 import Topic from '../Topic/Topic';
+import { useAuth } from '../../services/AuthService';
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -12,15 +13,13 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated, logout, user } = useAuth();
 
-  const name = localStorage.getItem('name');
-  const email = localStorage.getItem('email');
+  const name = user?.name;
+  const email = user?.email;
 
   const pathname = location.pathname.split('/');
   // console.log(pathname[1]);
-
-  const login = localStorage.getItem('login');
-  // console.log(login);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -44,13 +43,6 @@ const Navbar = () => {
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
-
-  const handleSignOut = () => {
-    localStorage.removeItem('login');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
-    window.location.href = '/';
-  };
 
   return (
     <nav className="bg-[#e1dfde] border-gray-200 sticky top-0 z-50 shadow-md h-[max(80px,10vh)] transition-all duration-300">
@@ -95,7 +87,7 @@ const Navbar = () => {
                 <Link
                   to="/signout"
                   className={`${location.pathname === '/signout' ? 'bg-gray-100' : ''} block px-4 py-2 text-sm text-gray-700 rounded-lg`}
-                  onClick={() => handleSignOut()}
+                  onClick={() => logout()}
                 >
                   Sign out
                 </Link>
@@ -167,7 +159,6 @@ const Navbar = () => {
                 Home
               </Link>
             </li>
-            {login === 'true' && (
             <li>
               <Link
                 to="/dashboard"
@@ -177,7 +168,6 @@ const Navbar = () => {
                 Dashboard
               </Link>
             </li>
-            )}
             <li>
               <Link
                 to="/about"
