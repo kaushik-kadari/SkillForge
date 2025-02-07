@@ -3,53 +3,48 @@ import { HiBadgeCheck } from "react-icons/hi";
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel.jsx';
 import Progress from '../../components/Progress/Progress.jsx';
+import { useAuth } from '../../services/AuthService.jsx';
 
 const Languages = () => {
   const topics = [
-    { path: "/topics/c", label: "C" },
-    { path: "/topics/cplusplus", label: "C++" },
-    { path: "/topics/csharp", label: "C#" },
-    { path: "/topics/go", label: "Go" },
-    { path: "/topics/java", label: "Java" },
-    { path: "/topics/javascript", label: "JavaScript" },
-    { path: "/topics/kotlin", label: "Kotlin" },
-    { path: "/topics/php", label: "PHP" },
-    { path: "/topics/python", label: "Python" },
-    { path: "/topics/ruby", label: "Ruby" },
-    { path: "/topics/swift", label: "Swift" },
-    { path: "/topics/typescript", label: "TypeScript" }
+      { path: "/topics/c", label: "C", count: 19 },
+      { path: "/topics/cplusplus", label: "C++", count: 16 },
+      { path: "/topics/csharp", label: "C#", count: 19 },
+      { path: "/topics/go", label: "Go", count: 18 },
+      { path: "/topics/java", label: "Java", count: 20 },
+      { path: "/topics/javascript", label: "JavaScript", count: 17 },
+      { path: "/topics/kotlin", label: "Kotlin", count: 15 },
+      { path: "/topics/php", label: "PHP", count: 16 },
+      { path: "/topics/python", label: "Python", count: 20 },
+      { path: "/topics/ruby", label: "Ruby", count: 15 },
+      { path: "/topics/swift", label: "Swift", count: 17 },
+      { path: "/topics/typescript", label: "TypeScript", count: 15 }
   ];
   
   const progress = [
-    { label: "C", value: 20 },
-    { label: "C++", value: 40 },
-    { label: "C#", value: 50 },
-    { label: "Go", value: 30 },
-    { label: "Java", value: 80 },
-    { label: "JavaScript", value: 90 },
-    { label: "Kotlin", value: 35 },
-    { label: "PHP", value: 45 },
-    { label: "Python", value: 75 },
-    { label: "Ruby", value: 25 },
-    { label: "Swift", value: 60 },
-    { label: "TypeScript", value: 70 }
+    { label: "C" },
+    { label: "C++" },
+    { label: "C#" },
+    { label: "Go" },
+    { label: "Java" },
+    { label: "JavaScript" },
+    { label: "Kotlin" },
+    { label: "PHP" },
+    { label: "Python" },
+    { label: "Ruby" },
+    { label: "Swift" },
+    { label: "TypeScript" }
   ];
   
+  let { badges } = useAuth();
+  badges = badges.filter((badge) => badge.id >= 6 && badge.id <= 17);
+  // console.log(badges);
 
-  const badges = [
-    { id: 1 ,count:5 },
-    { id: 2 ,count:6 },
-    { id: 3 ,count:7 },
-    { id: 4 ,count:10},
-    { id: 5 ,count:5},
-    { id: 6 ,count:6},
-    { id: 7 ,count:7},
-    { id: 8 ,count:8},
-    { id: 9 ,count:9},
-    { id: 10 ,count:10},
-    { id: 11 ,count:7},
-    { id: 12 ,count:8}
-  ];
+  for(let i = 0; i < badges.length; i++) {
+    let val = Number.parseInt((badges[i].count / topics[i].count) * 100);
+    // console.log(val);
+    progress[i].value = val;
+  }
 
   const heading = "Languages";
 
@@ -64,7 +59,7 @@ const Languages = () => {
                 <p className='bg-[#e4e2e2] text-2xl text-center rounded-md'>Topics</p>
                 <div className='flex flex-col md:space-y-12 space-y-8 mt-10 '>
                   {topics.map((topic) => (
-                    <Link key={topic.index} to={topic.path} className="text-xl text-center">
+                    <Link key={topic.path} to={topic.path} className="text-xl text-center">
                       {topic.label}
                     </Link>
                   ))}
@@ -75,8 +70,8 @@ const Languages = () => {
                 <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
                   {badges.map((badge) => (
                     <div key={badge.id} className='mx-auto flex'>
-                      <p className='text-xl'>{badge.count} of 10</p>
-                      <HiBadgeCheck className='text-xl ml-2'/>
+                    <p className="text-xl">{Math.min(badge.count, topics[badge.id - 6].count)} of {topics[badge.id - 6].count}</p>
+                    <HiBadgeCheck className='text-xl ml-2'/>
                     </div>
                   ))}
                 </div>

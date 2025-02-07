@@ -3,36 +3,38 @@ import Carousel from "../../components/Carousel/Carousel";
 import { Link } from "react-router-dom";
 import { HiBadgeCheck } from "react-icons/hi";
 import Progress from "../../components/Progress/Progress";
+import { useAuth } from "../../services/AuthService";
 
 const Backend = () => {
   const heading = "Backend";
 
   const topics = [
-    { path: "/topics/flask", label: "Flask" },
-    { path: "/topics/django", label: "Django" },
-    { path: "/topics/node-js", label: "Node.js" },
-    { path: "/topics/express-js", label: "Express.js" },
-    { path: "/topics/spring-boot", label: "Spring Boot" },
-    { path: "/topics/fastapi", label: "FastAPI" },
+    { path: "/topics/flask", label: "Flask", count: 12 },
+    { path: "/topics/django", label: "Django", count: 14 },
+    { path: "/topics/node-js", label: "Node.js", count: 14 },
+    { path: "/topics/express-js", label: "Express.js", count: 13 },
+    { path: "/topics/spring-boot", label: "Spring Boot", count: 14 },
+    { path: "/topics/fastapi", label: "FastAPI", count: 13 },
   ];
 
   const progress = [
-    { label: "FLASK", value: 70 },
-    { label: "DJANGO", value: 80 },
-    { label: "NODE.JS", value: 100 },
-    { label: "EXPRESS.JS", value: 90 },
-    { label: "SPRING BOOT", value: 50 },
-    { label: "FASTAPI", value: 60 },
+    { label: "FLASK" },
+    { label: "DJANGO" },
+    { label: "NODE.JS" },
+    { label: "EXPRESS.JS" },
+    { label: "SPRING BOOT" },
+    { label: "FASTAPI" },
   ];
 
-  const badges = [
-    { id: 1, count: 5 },
-    { id: 2, count: 6 },
-    { id: 3, count: 7 },
-    { id: 4, count: 10 },
-    { id: 5, count: 5 },
-    { id: 6, count: 6 },
-  ];
+  let { badges } = useAuth();
+  badges = badges.filter((badge) => badge.id >= 24 && badge.id <= 29);
+  // console.log(badges);
+
+  for(let i = 0; i < badges.length; i++) {
+    let val = Number.parseInt((badges[i].count / topics[i].count) * 100);
+    // console.log(val);
+    progress[i].value = val;
+  }
 
   return (
     <div>
@@ -63,7 +65,7 @@ const Backend = () => {
               <div className="flex flex-col md:space-y-12 space-y-8 m-10">
                 {badges.map((badge) => (
                   <div key={badge.id} className="mx-auto flex ">
-                    <p className="text-xl">{badge.count}</p>
+                    <p className="text-xl">{Math.min(badge.count, topics[badge.id - 24].count)} of {topics[badge.id - 24].count}</p>
                     <HiBadgeCheck className="text-xl  ml-2" />
                   </div>
                 ))}

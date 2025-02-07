@@ -2,28 +2,34 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../services/AuthService";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const { setIsAuthenticated, isAuthenticated } = useAuth();
 
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // console.log({ email, password });
+    // console.log(isAuthenticated);
 
     axios
       .post("http://localhost:3000/api/login", { email, password })
       .then((response) => {
         // console.log(response);
         localStorage.setItem("token", response.data.token);
-        window.location.href = "/dashboard";
+        setIsAuthenticated(true);
+        console.log(isAuthenticated);
+        // window.location.href = "/dashboard";
       })
       .catch((error) => {
-        // console.log(error);
-        toast.error(error.response.data.message);
+        // console.log(error.message);
+        let msg = (error?.response) ?  error.response.data.message : error.message;
+        toast.error(msg);
       });
   };
 

@@ -25,7 +25,7 @@ const App = () => {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-[100vh] flex flex-col">
         {isAuthenticated && <Navbar />}
 
         <ToastContainer
@@ -84,7 +84,7 @@ const App = () => {
               }
             />
             <Route
-              path="/content/:subject/:topic/:content"
+              path="/content/:subject/:topic/:id/:content"
               element={
                 <ProtectedRoute condition={true}>
                   <Content />
@@ -121,9 +121,11 @@ const App = () => {
         </div>
 
         {isAuthenticated && (
-          <footer className="py-3 bg-gray-100 shadow-xl border-t">
-            <div className="container mx-auto text-center">
-              <p>&copy; 2024 SkillForge. All rights reserved.</p>
+          <footer
+            className="bg-gray-100 shadow-xl border-t"
+          >
+            <div className="container mx-auto text-center text-sm ">
+              <p>&copy; 2025 SkillForge. All rights reserved.</p>
             </div>
           </footer>
         )}

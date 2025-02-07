@@ -4,9 +4,10 @@ import Groq from "groq-sdk";
 import { LuBadgeCheck } from "react-icons/lu";
 import { LuBadgeX } from "react-icons/lu";
 import { FallingLines } from "react-loader-spinner";
+import { useAuth } from "../../services/AuthService";
 
 
-const Quiz = ({ subject, topic }) => {
+const Quiz = ({ subject, topic, id }) => {
   const sub = subject.toUpperCase();
   const top = topic.toUpperCase();
   const [questions, setQuestions] = useState([]);
@@ -16,6 +17,7 @@ const Quiz = ({ subject, topic }) => {
   const [quizOver, setQuizOver] = useState(false);
   const [started, setStarted] = useState(false);
   const [fetched, setFetched] = useState(false);
+  const { addBadge } = useAuth();
 
   const apiKey = "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";
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
@@ -49,7 +51,7 @@ const Quiz = ({ subject, topic }) => {
         const cleanedString = responseString.replace(/\\[\\n]/g, "");
         // console.log(cleanedString);
         const quizArray = JSON.parse(cleanedString);
-        // console.log(quizArray);
+        console.log(quizArray);
         // console.log(typeof quizArray);
         setQuestions(quizArray);
         setFetched(true);
@@ -77,6 +79,24 @@ const Quiz = ({ subject, topic }) => {
     }
   };
 
+  const handleBadges = () => {
+    id = Number.parseInt(id);
+    if (id >= 6 && id <= 17) {
+      addBadge(1);
+      addBadge(id);
+    } else if (id >= 18 && id <= 23) {
+      addBadge(2);
+      addBadge(id);
+    } else if (id >= 24 && id <= 29) {
+      addBadge(3);
+      addBadge(id);
+    } else if (id === 4) {
+      addBadge(4);
+    } else if (id === 5) {
+      addBadge(5);
+    }
+  }
+
   const handleNextQuestion = () => {
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion(currentQuestion + 1);
@@ -89,6 +109,7 @@ const Quiz = ({ subject, topic }) => {
         }
       });
       setScore(score);
+      if(score == 5) handleBadges();
     }
   };
 
@@ -122,6 +143,7 @@ const Quiz = ({ subject, topic }) => {
       </div>
     );
   }
+ 
 
   if (questions.length === 0 && started) {
     return (
@@ -181,8 +203,8 @@ const Quiz = ({ subject, topic }) => {
                       }}
                       checked={selectedOptions[currentQuestion] === option}
                     />
-                    {option}
                   </label>
+                    {option}
                 </div>
               ))}
             </div>

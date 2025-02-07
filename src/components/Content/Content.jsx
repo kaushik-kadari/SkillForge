@@ -26,9 +26,11 @@ import { getVideoLink, addVideoLink } from "../../services/contentService";
 
 const Content = () => {
   const location = useLocation();
-  let { subject, topic } = useParams();
+  let { subject, topic, id } = useParams();
   const Subject = subject.toUpperCase();
   const [videoLink, setVideoLink] = useState("");
+
+  // console.log(subject, topic, id);
 
   const API_KEY = "AIzaSyD1BoZKkwFHlc67eoW8e56c06Zb7x2vYEk"; // yt key
 
@@ -36,7 +38,7 @@ const Content = () => {
   const navigate = useNavigate();
 
   const [showContent, setShowContent] = useState(
-    Content[4] === "content" ? true : false
+    Content[5] === "content" ? true : false
   );
   const [showVideo, setShowVideo] = useState(
     location.pathname === `/content/${subject}/${topic}/video` ? true : false
@@ -119,7 +121,7 @@ const Content = () => {
     setShowChat(type === "chat");
     setShowFeedback(type === "feedback");
 
-    navigate(`/content/${subject}/${topic}/${type}`);
+    navigate(`/content/${subject}/${topic}/${id}/${type}`);
   };
 
   const generateVideoLink = async (subject, topic) => {
@@ -164,11 +166,11 @@ const Content = () => {
 
   useEffect(() => {
     // handleVideoLink();
-    setShowContent(Content[4] === "content" ? true : false);
-    setShowVideo(Content[4] === "video" ? true : false);
-    setShowQuiz(Content[4] === "quiz" ? true : false);
-    setShowChat(Content[4] === "chat" ? true : false);
-    setShowFeedback(Content[4] === "feedback" ? true : false);
+    setShowContent(Content[5] === "content" ? true : false);
+    setShowVideo(Content[5] === "video" ? true : false);
+    setShowQuiz(Content[5] === "quiz" ? true : false);
+    setShowChat(Content[5] === "chat" ? true : false);
+    setShowFeedback(Content[5] === "feedback" ? true : false);
   }, [location.pathname]);
 
   return (
@@ -250,7 +252,7 @@ const Content = () => {
 
       {showQuiz && (
         <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[80vh]">
-          <Quiz subject={subject} topic={topic} />
+          <Quiz subject={subject} topic={topic} id={id}/>
         </div>
       )}
 
@@ -261,14 +263,14 @@ const Content = () => {
       )}
 
       {showFeedback && (
-        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[80vh]">
+        <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10  shadow-lg min-h-[80vh]">
           <h1 className="text-2xl font-bold mb-2 text-center">
-            Machine Learning
+            { topic }
           </h1>
           <h1 className="text-xl font-semibold  text-center my-4">
             We value your feedback!
           </h1>
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
+          <form onSubmit={handleSubmit} className="flex flex-col border-none space-y-6">
             {questions.map((question, index) => (
               <div key={index} className="">
                 <p className="text-xl mb-2">{question}</p>

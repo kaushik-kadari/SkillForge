@@ -3,31 +3,34 @@ import Carousel from "../components/Carousel/Carousel";
 import { Link } from 'react-router-dom';
 import { HiBadgeCheck } from "react-icons/hi";
 import Progress from '../components/Progress/Progress';
+import { useAuth } from '../services/AuthService';
 
 const Dashboard = () => {
   const topics = [
-    { path: "/languages", label: "Languages", index: 0 },
-    { path: "/frontend", label: "Frontend", index: 1 },
-    { path: "/backend", label: "Backend", index: 2 }, 
-    { path: "/topics/machine Learning", label: "Machine Learning", index: 3 }, 
-    { path: "/topics/aptitude", label: "Aptitude", index: 4 }, 
+    { path: "/languages", label: "Languages", index: 0, count: 12 },
+    { path: "/frontend", label: "Frontend", index: 1, count: 6},
+    { path: "/backend", label: "Backend", index: 2, count: 6}, 
+    { path: "/topics/machine Learning", label: "Machine Learning", index: 3, count: 16}, 
+    { path: "/topics/aptitude", label: "Aptitude", index: 4, count: 34}, 
   ];
 
   const progress = [
-    { label: "Languages", value: 75 },
-    { label: "Frontend", value: 80 },
-    { label: "Backend", value: 70 },
-    { label: "Machine Learning", value: 60 },
-    { label: "Aptitude", value: 55 }
+    { label: "Languages" },
+    { label: "Frontend" },
+    { label: "Backend" },
+    { label: "Machine Learning" },
+    { label: "Aptitude" }
   ];
 
-  const badges = [
-    { id: 1, count: 5 },
-    { id: 2, count: 6 },
-    { id: 3, count: 7 },
-    { id: 4, count: 8 },
-    { id: 5, count: 9 }
-  ];
+  let { badges } = useAuth();
+  badges = badges.filter((badge) => badge.id >= 1 && badge.id <= 5);
+  // console.log(badges);
+
+  for(let i = 0; i < badges.length; i++) {
+    let val = Number.parseInt((badges[i].count / topics[i].count) * 100);
+    // console.log(val);
+    progress[i].value = val;
+  }
 
   const heading="Dashboard";
 
@@ -53,7 +56,7 @@ const Dashboard = () => {
                 <div className='flex flex-col  md:space-y-12 space-y-8 my-5'>
                   {badges.map((badge) => (
                     <div key={badge.id} className='mx-auto flex'>
-                      <p className='text-xl'>{badge.count} of 10</p>
+                      <p className='text-xl'>{Math.min(badge.count, topics[badge.id - 1].count)} of {topics[badge.id - 1].count}</p>
                       <HiBadgeCheck className='text-xl ml-2 md:block'/>
                     </div>
                   ))}

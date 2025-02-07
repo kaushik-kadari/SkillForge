@@ -3,15 +3,17 @@ import { HiBadgeCheck } from "react-icons/hi";
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel';
 import Progress from '../../components/Progress/Progress';
+import { useAuth } from '../../services/AuthService';
 
 const Frontend = () => {
   const topics = [
-    { path: "/topics/html", label: "HTML" },
-    { path: "/topics/css", label: "CSS" },
-    { path: "/topics/javascript", label: "JAVASCRIPT" },
-    { path: "/topics/react-js", label: "REACT.JS" },
-    { path: "/topics/next-js", label: "NEXT.JS" },
-    { path: "/topics/tailwind-css", label: "TAILWIND.CSS" }  ];
+    { path: "/topics/html", label: "HTML", count: 10 },
+    { path: "/topics/css", label: "CSS", count: 14 },
+    { path: "/topics/javascript", label: "JAVASCRIPT", count: 17 },
+    { path: "/topics/react-js", label: "REACT.JS", count: 16 },
+    { path: "/topics/next-js", label: "NEXT.JS", count: 15 },
+    { path: "/topics/tailwind-css", label: "TAILWIND.CSS", count: 14 }
+  ];
 
   const progress = [
     { label: "HTML", value: 10 },
@@ -22,14 +24,15 @@ const Frontend = () => {
     { label: "NEXT.JS", value: 70 },
   ];
 
-  const badges = [
-    { id: 1 ,count:5 },
-    { id: 2 ,count:6 },
-    { id: 3 ,count:7 },
-    { id: 4 ,count:10},
-    { id: 5 ,count:5},
-    { id: 6 ,count:6},
-  ];
+  let { badges } = useAuth();
+  badges = badges.filter((badge) => badge.id >= 18 && badge.id <= 23);
+  // console.log(badges);
+
+  for(let i = 0; i < badges.length; i++) {
+    let val = Number.parseInt((badges[i].count / topics[i].count) * 100);
+    // console.log(val);
+    progress[i].value = val;
+  }
 
   const heading = "Frontend";
 
@@ -58,7 +61,7 @@ const Frontend = () => {
               <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
                 {badges.map((badge) => (
                   <div key={badge.id} className='mx-auto flex '>
-                    <p className='text-xl'>{badge.count}</p>
+                    <p className="text-xl">{Math.min(badge.count, topics[badge.id - 18].count)} of {topics[badge.id - 18].count}</p>
                     <HiBadgeCheck className='text-xl ml-2'/>
                   </div>
                 ))}
