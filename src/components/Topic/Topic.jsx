@@ -1,16 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Content from "../Content/Content";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { getTasks } from "../../services/contentService";
+import { useAuth } from "../../services/AuthService";
+import { HiBadgeCheck } from "react-icons/hi";
 
 function Topic() {
   const { subject } = useParams();
   // console.log(subject);
   const navigate = useNavigate();
+  const location = useLocation();
   const renderContent = (topic, subject, id) => {
     // console.log(topic);
     navigate("/content/" + subject + "/" + topic + "/" + id + "/content");
+  }
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (user.email) { 
+        try {
+          const res = await getTasks(user.email);
+          // console.log(res);
+          setTasks(res.tasks);
+        } catch (error) {
+          console.error("Error fetching tasks:", error);
+        }
+      }
+    };
+
+    fetchTasks(); 
+
+  }, [user.email]);
+
+  const checkTask = (topic, subject) => {
+    // console.log(subject + "-" + topic);
+    // console.log(tasks);
+    if(!tasks) return false;
+    return tasks.includes(subject + "-" + topic);
   }
 
   const topics = {
@@ -300,24 +330,30 @@ function Topic() {
         { id: 19, path: "/css/z-index", label: "z-index" },
       ],
     },
-    javascript: {
+    javascriptDev: {
       sub: [
+        { id: 20, path: "/javascript/datatypes", label: "Data Types" },
         { id: 20, path: "/javascript/variables", label: "Variables" },
-        { id: 20, path: "/javascript/data_types", label: "Data Types" },
+        { id: 20, path: "/javascript/conditional_statements", label: "Conditional Statements" },
         { id: 20, path: "/javascript/functions", label: "Functions" },
-        { id: 20, path: "/javascript/objects", label: "Objects" },
         { id: 20, path: "/javascript/arrays", label: "Arrays" },
-        { id: 20, path: "/javascript/es6", label: "ES6 Features" },
-        { id: 20, path: "/javascript/promises", label: "Promises" },
-        { id: 20, path: "/javascript/async_await", label: "Async/Await" },
-        { id: 20, path: "/javascript/event_handling", label: "Event Handling" },
-        { id: 20, path: "/javascript/dom_manipulation", label: "DOM Manipulation" },
-        { id: 20, path: "/javascript/error_handling", label: "Error Handling" },
-        { id: 20, path: "/javascript/json", label: "JSON" },
-        { id: 20, path: "/javascript/closures", label: "Closures" },
-        { id: 20, path: "/javascript/arrow_functions", label: "Arrow Functions" },
+        { id: 20, path: "/javascript/loops", label: "Loops" },
+        { id: 20, path: "/javascript/objects", label: "Objects" },
         { id: 20, path: "/javascript/classes", label: "Classes" },
-        { id: 20, path: "/javascript/prototypes", label: "Prototypes" },
+        { id: 20, path: "/javascript/multithreading", label: "Multithreading" },
+        { id: 20, path: "/javascript/async_await", label: "Async/Await" },
+        { id: 20, path: "/javascript/json", label: "JSON" },
+        { id: 20, path: "/javascript/prototype_chain", label: "Prototype Chain" },
+        { id: 20, path: "/javascript/closures", label: "Closures" },
+        { id: 20, path: "/javascript/hoisting", label: "Hoisting" },
+        { id: 20, path: "/javascript/this_keyword", label: "This Keyword" },
+        { id: 20, path: "/javascript/dom_manipulation", label: "DOM Manipulation" },
+        { id: 20, path: "/javascript/event_handling", label: "Event Handling" },
+        { id: 20, path: "/javascript/promise_chaining", label: "Promise Chaining" },
+        { id: 20, path: "/javascript/webstorage", label: "Web Storage" },
+        { id: 20, path: "/javascript/webworkers", label: "Web Workers" },
+        { id: 20, path: "/javascript/service_workers", label: "Service Workers" },
+        { id: 20, path: "/javascript/web_components", label: "Web Components" },
       ],
     },
     "tailwind-css": {
@@ -549,7 +585,7 @@ function Topic() {
         </h1>
         <div className="flex flex-col md:space-y-12 space-y-8 my-5 max-h-[60vh] overflow-y-scroll">
           {topics[subject].sub?.map((topic, index) => (
-            <p key={index} className="text-xl text-center cursor-pointer" onClick={() => renderContent(topic.label, subject, topic.id)}>{topic.label}</p>
+            <p key={index} className="text-xl flex justify-center cursor-pointer" onClick={() => renderContent(topic.label, subject, topic.id)}>{topic.label} {checkTask(topic.label, subject) && <HiBadgeCheck className="ml-2 mt-1"/>}</p>
           ))}
         </div>
       </div>

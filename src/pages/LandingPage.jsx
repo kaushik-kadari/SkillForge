@@ -36,7 +36,7 @@ const LandingPage = () => {
         </h3>
         <div className="grid grid-cols-1 gap-8 mt-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Languages */}
-          <div className="p-6 md:hidden text-center transition-all bg-[#fffcef] rounded shadow-md cursor-pointer md: mp-6 hover:shadow-lg">
+          <div className="p-6 md:hidden text-center transition-all bg-[#fffcef] rounded shadow-md md: mp-6 hover:shadow-lg">
             <h4 className="text-xl font-bold text-gray-800">Languages</h4>
             <p className="mt-4 text-gray-600">
               Learn the fundamentals of programming languages like C, C++, Java,

@@ -1,40 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { HiBadgeCheck } from "react-icons/hi";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel';
 import Progress from '../../components/Progress/Progress';
 import { useAuth } from '../../services/AuthService';
+import { getTasks, addTask } from '../../services/contentService';
 
 const Frontend = () => {
   const topics = [
     { path: "/topics/html", label: "HTML", count: 10 },
     { path: "/topics/css", label: "CSS", count: 14 },
-    { path: "/topics/javascript", label: "JAVASCRIPT", count: 17 },
+    { path: "/topics/javascriptDev", label: "JAVASCRIPT", count: 17 },
     { path: "/topics/react-js", label: "REACT.JS", count: 16 },
     { path: "/topics/next-js", label: "NEXT.JS", count: 15 },
     { path: "/topics/tailwind-css", label: "TAILWIND.CSS", count: 14 }
   ];
 
   const progress = [
-    { label: "HTML", value: 10 },
-    { label: "CSS", value: 100 },
-    { label: "JAVASCRIPT", value: 70 },
-    { label: "TAILWIND.CSS", value: 100 },
-    { label: "REACT.JS", value: 100 },
-    { label: "NEXT.JS", value: 70 },
+    { label: "HTML", value: 0 },
+    { label: "CSS", value: 0 },
+    { label: "JAVASCRIPT", value: 0 },
+    { label: "TAILWIND.CSS", value: 0 },
+    { label: "REACT.JS", value: 0 },
+    { label: "NEXT.JS", value: 0 },
   ];
 
-  let { badges } = useAuth();
-  badges = badges.filter((badge) => badge.id >= 18 && badge.id <= 23);
+  const heading = "Frontend";
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState(null);
+  const location = useLocation();
+
+  const checkTask = (topic, subject) => {
+    // console.log(tasks);
+    if(!tasks) return false;
+    return tasks.includes(subject + "-" + topic);
+  }
+  
+  let { badges, addBadge } = useAuth();
+  let Badges = badges.filter((badge) => badge.id >= 18 && badge.id <= 23);
   // console.log(badges);
 
-  for(let i = 0; i < badges.length; i++) {
-    let val = Number.parseInt((badges[i].count / topics[i].count) * 100);
-    // console.log(val);
-    progress[i].value = val;
+  const updateProgress = async () => {
+    for(let i = 0; i < Badges.length; i++) {
+      
+      if(Badges[i].count == topics[i].count && !checkTask(topics[i].label, heading)) {  
+        // console.log("yes");
+        await addTask(user.email, heading + "-" + topics[i].label);
+        await addBadge(2);
+      }
+      
+      let val = Number.parseInt((Badges[i].count / topics[i].count) * 100);
+      // console.log(val);
+      progress[i].value = val;
+    }
   }
 
-  const heading = "Frontend";
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (user.email) { 
+        try {
+          const res = await getTasks(user.email);
+          // console.log(res);
+          setTasks(res.tasks);
+        } catch (error) {
+          console.error("Error fetching tasks:", error);
+        }
+      }
+    };
+    
+    fetchTasks(); 
+  }, [user.email, badges]);
+
+  useEffect(() => {
+    if (tasks !== null) {
+      updateProgress();  
+    }
+  }, [tasks]); 
 
   return (
     <div>
@@ -59,7 +100,7 @@ const Frontend = () => {
             <div className='w-11/12 mx-auto'>
               <p className='bg-[#e4e2e2] text-2xl text-center rounded-md my-2'>Badges</p>
               <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
-                {badges.map((badge) => (
+                {Badges.map((badge) => (
                   <div key={badge.id} className='mx-auto flex '>
                     <p className="text-xl">{Math.min(badge.count, topics[badge.id - 18].count)} of {topics[badge.id - 18].count}</p>
                     <HiBadgeCheck className='text-xl ml-2'/>
@@ -79,7 +120,7 @@ const Frontend = () => {
               </div>
             </div>
             
-            <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:mt-8 lg:mt-8`}>
+            <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:my-2 lg:mt-8`}>
               <Progress progress={progress} />
             </div>
         </div>

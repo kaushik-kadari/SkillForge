@@ -1,53 +1,43 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode"; // Optional for token decoding
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { addBadges, getBadges } from "./contentService";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const token = localStorage.getItem("token");
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    token ? true : false
+  );
   const [user, setUser] = useState({
     name: "",
     email: "",
   });
-  const [badges, setBadges] = useState([
-    { id: 1, count: 5 },
-    { id: 2, count: 0 },
-    { id: 3, count: 0 },
-    { id: 4, count: 0 },
-    { id: 5, count: 0 },
-    { id: 6, count: 5 },
-    { id: 7, count: 0 },
-    { id: 8, count: 0 },
-    { id: 9, count: 0 },
-    { id: 10, count: 0 },
-    { id: 11, count: 8 },
-    { id: 12, count: 0 },
-    { id: 13, count: 0 },
-    { id: 14, count: 0 },
-    { id: 15, count: 0 },
-    { id: 16, count: 0 },
-    { id: 17, count: 0 },
-    { id: 18, count: 10 },
-    { id: 19, count: 0 },
-    { id: 20, count: 0 },
-    { id: 21, count: 0 },
-    { id: 22, count: 0 },
-    { id: 23, count: 0 },
-    { id: 24, count: 7 },
-    { id: 25, count: 0 },
-    { id: 26, count: 0 },
-    { id: 27, count: 0 },
-    { id: 28, count: 0 },
-    { id: 29, count: 0 },
-  ]);
+  const [badges, setBadges] = useState(
+    Array.from({ length: 29 }, (_, i) => ({
+      id: i + 1,
+      count: 0,
+    }))
+  );
 
-
+  const navigate = useNavigate();
   const location = useLocation();
 //   console.log(location.pathname);
- 
+
+  const fetchBadges = async (email) => {
+    // console.log(email);
+    await getBadges(email).then((res) => {
+      // console.log(res);
+      if(res) {
+        setBadges(res.badges);
+      }
+    })
+  }
+
   useEffect(() => {
+    // console.log("yes");
     const checkValidity = async (token) => {
       try {
         const response = await axios.get("http://localhost:3000/api/validateJWT", {
@@ -66,6 +56,7 @@ export const AuthProvider = ({ children }) => {
           name: decodedToken.name,
           email: decodedToken.email,
         });
+        await fetchBadges(decodedToken.email);
       } catch (error) { 
         // console.error(error);
         logout();
@@ -79,29 +70,35 @@ export const AuthProvider = ({ children }) => {
   
   }, [location.pathname]);
 
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
     setUser({
       name: "",
       email: "",
     });
-    window.location.href = "/login";
+    await addBadges(user.email, badges);
+    // window.location.href = "/login";
+    navigate("/login");
   }; 
 
-  const addBadge = (id) => {
+  const addBadge = async (id) => {
     // console.log(id);
-    setBadges((prevBadges) =>
-      prevBadges.map((badge) =>
+    setBadges((prevBadges) => {
+      const updatedBadges = prevBadges.map((badge) =>
         badge.id === id ? { ...badge, count: badge.count + 1 } : badge
-      )
-    );
+      );
+      // console.log(updatedBadges); 
+      if(user.email) addBadges(user.email, updatedBadges);
+      return updatedBadges;
+    });
+    
     // setBadges(badges.map((badge) => badge.id == id ? { id, count: badge.count + 1 } : badge));
     // console.log(badges);
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, logout, badges, addBadge }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, logout, badges, addBadge, setBadges }}>
       {children}
     </AuthContext.Provider>
   );

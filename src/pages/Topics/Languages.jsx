@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { HiBadgeCheck } from "react-icons/hi";
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel.jsx';
 import Progress from '../../components/Progress/Progress.jsx';
 import { useAuth } from '../../services/AuthService.jsx';
+import { getTasks, addTask } from '../../services/contentService';
+import { useLocation } from 'react-router-dom';
 
 const Languages = () => {
   const topics = [
@@ -22,32 +24,73 @@ const Languages = () => {
   ];
   
   const progress = [
-    { label: "C" },
-    { label: "C++" },
-    { label: "C#" },
-    { label: "Go" },
-    { label: "Java" },
-    { label: "JavaScript" },
-    { label: "Kotlin" },
-    { label: "PHP" },
-    { label: "Python" },
-    { label: "Ruby" },
-    { label: "Swift" },
-    { label: "TypeScript" }
+    { label: "C", value: 0 },
+    { label: "C++", value: 0 },
+    { label: "C#", value: 0 },
+    { label: "Go", value: 0 },
+    { label: "Java", value: 0 },
+    { label: "JavaScript", value: 0 },
+    { label: "Kotlin", value: 0 },
+    { label: "PHP", value: 0 },
+    { label: "Python", value: 0 },
+    { label: "Ruby", value: 0 },
+    { label: "Swift", value: 0 },
+    { label: "TypeScript", value: 0 }
   ];
   
-  let { badges } = useAuth();
-  badges = badges.filter((badge) => badge.id >= 6 && badge.id <= 17);
+  const heading = "Languages";
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState(null);
+  const location = useLocation();
+
+  const checkTask = (topic, subject) => {
+    // console.log(tasks);
+    if(!tasks) return false;
+    return tasks.includes(subject + "-" + topic);
+  }
+  
+  let { badges, addBadge } = useAuth();
+  let Badges = badges.filter((badge) => badge.id >= 6 && badge.id <= 17);
   // console.log(badges);
 
-  for(let i = 0; i < badges.length; i++) {
-    let val = Number.parseInt((badges[i].count / topics[i].count) * 100);
-    // console.log(val);
-    progress[i].value = val;
+  const updateProgress = async () => {
+    for(let i = 0; i < Badges.length; i++) {
+      
+      if(Badges[i].count == topics[i].count && !checkTask(topics[i].label, heading)) {  
+        // console.log("yes");
+        await addTask(user.email, heading + "-" + topics[i].label);
+        await addBadge(1);
+      }
+      
+      let val = Number.parseInt((Badges[i].count / topics[i].count) * 100);
+      // console.log(val);
+      progress[i].value = val;
+    }
+    // console.log(progress);
   }
 
-  const heading = "Languages";
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (user.email) { 
+        try {
+          const res = await getTasks(user.email);
+          // console.log(res);
+          setTasks(res.tasks);
+        } catch (error) {
+          console.error("Error fetching tasks:", error);
+        }
+      }
+    };
+    
+    fetchTasks(); 
+  }, [user.email, badges]);
 
+  useEffect(() => {
+    if (tasks !== null) {
+      // console.log("yes");
+      updateProgress();  
+    }
+  }, [tasks]);
   return (
     <>
       <div>
@@ -57,7 +100,7 @@ const Languages = () => {
             <div className='grid grid-cols-2 gap-4'>
               <div className='w-11/12 mx-auto'>
                 <p className='bg-[#e4e2e2] text-2xl text-center rounded-md'>Topics</p>
-                <div className='flex flex-col md:space-y-12 space-y-8 mt-10 '>
+                <div className='flex flex-col md:space-y-12 space-y-8 my-10 '>
                   {topics.map((topic) => (
                     <Link key={topic.path} to={topic.path} className="text-xl text-center">
                       {topic.label}
@@ -67,8 +110,8 @@ const Languages = () => {
               </div>
               <div className=''>
                 <p className='bg-[#e4e2e2] text-2xl text-center rounded-md'>Badges</p>
-                <div className='flex flex-col md:space-y-12 space-y-8 mt-10'>
-                  {badges.map((badge) => (
+                <div className='flex flex-col md:space-y-12 space-y-8 my-10'>
+                  {Badges.map((badge) => (
                     <div key={badge.id} className='mx-auto flex'>
                     <p className="text-xl">{Math.min(badge.count, topics[badge.id - 6].count)} of {topics[badge.id - 6].count}</p>
                     <HiBadgeCheck className='text-xl ml-2'/>
@@ -90,7 +133,7 @@ const Languages = () => {
               </div>
             </div>
 
-            <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:mt-8 lg:mt-8`}>
+            <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:my-4 lg:mt-8`}>
               <Progress progress={progress} />
             </div>
           </div>

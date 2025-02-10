@@ -15,11 +15,11 @@ const Dashboard = () => {
   ];
 
   const progress = [
-    { label: "Languages" },
-    { label: "Frontend" },
-    { label: "Backend" },
-    { label: "Machine Learning" },
-    { label: "Aptitude" }
+    { label: "Languages", value: 0 },
+    { label: "Frontend", value: 0 },
+    { label: "Backend", value: 0 },
+    { label: "Machine Learning", value: 0 },
+    { label: "Aptitude", value: 0 }
   ];
 
   let { badges } = useAuth();
@@ -29,7 +29,7 @@ const Dashboard = () => {
   for(let i = 0; i < badges.length; i++) {
     let val = Number.parseInt((badges[i].count / topics[i].count) * 100);
     // console.log(val);
-    progress[i].value = val;
+    progress[i].value = Math.min(val, 100);
   }
 
   const heading="Dashboard";

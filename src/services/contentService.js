@@ -45,3 +45,46 @@ export const addVideoLink = async (subject, topic, videoLink) => {
         return error;
     }
 }
+
+export const addBadges = async (email, badges) => {
+    try {
+        const response = await axios.post("http://localhost:3000/api/add-badges", { email, badges });
+        return response.data;
+    } catch (error) {
+        // console.error(error);
+        return error;
+    }
+}
+
+export const getBadges = async (email) => {
+    try {
+        // console.log(email);
+        const response = await axios.get("http://localhost:3000/api/get-badges" + "/" + email);
+        return response.data;
+    } catch (error) {
+        // console.error(error);
+        return error;
+    }
+}
+
+export const getTasks = async (email) => {
+    try {
+        // console.log(email);
+        const response = await axios.get("http://localhost:3000/api/get-tasks" + "/" + email);
+        return response.data;
+    } catch (error) {
+        // console.error(error);
+        return error;
+    }
+}
+
+export const addTask = async (email, task) => {
+    try {
+        // console.log(email, task);
+        const response = await axios.post("http://localhost:3000/api/add-task", { email, task });
+        return response.data;
+    } catch (error) {
+        // console.error(error);
+        return error;
+    }
+}

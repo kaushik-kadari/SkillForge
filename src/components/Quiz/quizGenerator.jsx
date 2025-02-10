@@ -5,6 +5,7 @@ import { LuBadgeCheck } from "react-icons/lu";
 import { LuBadgeX } from "react-icons/lu";
 import { FallingLines } from "react-loader-spinner";
 import { useAuth } from "../../services/AuthService";
+import { getTasks, addTask } from "../../services/contentService";
 
 
 const Quiz = ({ subject, topic, id }) => {
@@ -17,7 +18,7 @@ const Quiz = ({ subject, topic, id }) => {
   const [quizOver, setQuizOver] = useState(false);
   const [started, setStarted] = useState(false);
   const [fetched, setFetched] = useState(false);
-  const { addBadge } = useAuth();
+  const { addBadge, user } = useAuth();
 
   const apiKey = "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";
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
@@ -51,12 +52,12 @@ const Quiz = ({ subject, topic, id }) => {
         const cleanedString = responseString.replace(/\\[\\n]/g, "");
         // console.log(cleanedString);
         const quizArray = JSON.parse(cleanedString);
-        console.log(quizArray);
+        // console.log(quizArray);
         // console.log(typeof quizArray);
         setQuestions(quizArray);
         setFetched(true);
       } catch (error) {
-        // console.error("Failed to fetch quiz questions", error);
+        console.error("Failed to fetch quiz questions", error);
         if(!fetched) fetchQuestions();
       }
     };
@@ -79,16 +80,26 @@ const Quiz = ({ subject, topic, id }) => {
     }
   };
 
-  const handleBadges = () => {
+  const handleBadges = async () => {
+    try {
+      if(!user.email) return;
+      const Task = subject + "-" + topic;
+      const res = await getTasks(user.email);
+      // console.log(res);
+      const done = !res.tasks ? false : res.tasks.includes(Task);
+      if(done) return;
+      await addTask(user.email, Task);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+
     id = Number.parseInt(id);
     if (id >= 6 && id <= 17) {
-      addBadge(1);
       addBadge(id);
     } else if (id >= 18 && id <= 23) {
-      addBadge(2);
       addBadge(id);
     } else if (id >= 24 && id <= 29) {
-      addBadge(3);
       addBadge(id);
     } else if (id === 4) {
       addBadge(4);
@@ -135,7 +146,13 @@ const Quiz = ({ subject, topic, id }) => {
           </p>
           <button
             className=" text-black font-bold p-4 rounded-md mt-8 hover:text-white transition-all border-solid border-black border-2 text-sm hover:bg-black"
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setStarted(false);
+              setQuizOver(false);
+              setCurrentQuestion(0);
+              setSelectedOptions({});
+              setScore(0);
+            }}
           >
             Take Quiz Again
           </button>

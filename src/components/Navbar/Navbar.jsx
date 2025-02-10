@@ -34,21 +34,11 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   };
 
-  useEffect(() => {
-    const handleEscape = (event) => {
-      if (event.key === 'Escape') {
-        setIsMobileMenuOpen(false);
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, []);
-
   return (
     <nav className="bg-[#e1dfde] border-gray-200 sticky top-0 z-50 shadow-md h-[max(80px,10vh)] transition-all duration-300">
       <div className="max-w-screen-xl mx-auto p-4 flex flex-wrap items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img src="Logo.png" alt="" className="h-12" />
+          <img src="/Logo.png" alt="" className="h-12" />
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
           <button
@@ -85,11 +75,11 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  to="/signout"
-                  className={`${location.pathname === '/signout' ? 'bg-gray-100' : ''} block px-4 py-2 text-sm text-gray-700 rounded-lg`}
+                  to="/login"
+                  className={`${location.pathname === '/login' ? 'bg-gray-100' : ''} block px-4 py-2 text-sm text-gray-700 rounded-lg`}
                   onClick={() => logout()}
                 >
-                  Sign out
+                  Logout
                 </Link>
               </li>
             </ul>

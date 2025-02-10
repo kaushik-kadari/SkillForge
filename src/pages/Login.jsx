@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../services/AuthService";
+import { getBadges } from "../services/contentService";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,18 +13,18 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // console.log({ email, password });
     // console.log(isAuthenticated);
 
     axios
       .post("http://localhost:3000/api/login", { email, password })
-      .then((response) => {
+      .then(async (response) => {
         // console.log(response);
         localStorage.setItem("token", response.data.token);
         setIsAuthenticated(true);
-        console.log(isAuthenticated);
+        // console.log(isAuthenticated);
         // window.location.href = "/dashboard";
       })
       .catch((error) => {

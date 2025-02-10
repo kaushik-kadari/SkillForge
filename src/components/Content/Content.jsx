@@ -23,12 +23,14 @@ import Topic from "../Topic/Topic";
 import ChatAi from "../ChatAi/ChatAi";
 import "./Content.css";
 import { getVideoLink, addVideoLink } from "../../services/contentService";
+import { useAuth } from "../../services/AuthService";
 
 const Content = () => {
   const location = useLocation();
   let { subject, topic, id } = useParams();
   const Subject = subject.toUpperCase();
   const [videoLink, setVideoLink] = useState("");
+  const { user } = useAuth();
 
   // console.log(subject, topic, id);
 
@@ -90,14 +92,14 @@ const Content = () => {
       rating: ratings[index],
     }));
 
-    console.log("Feedback submitted:", feedbacks);
+    // console.log("Feedback submitted:", feedbacks);
 
     // Reset the ratings and hovered state
     setRatings(Array(questions.length).fill(0));
     setHovered(Array(questions.length).fill(null));
 
-    const name = localStorage.getItem("name");
-    const email = localStorage.getItem("email");
+    const name = user.name;
+    const email = user.email;
 
     // Send the feedback data to the server
     axios
@@ -151,7 +153,7 @@ const Content = () => {
       // console.log("handleVideoLink");
       const response = await getVideoLink(subject, topic);
       // console.log(response);
-      if (response.status === 404) {
+      if (response.status === 404 || response.status === 500) {
         const videoLink = await generateVideoLink(subject, topic);
         setVideoLink(videoLink);
         const res = await addVideoLink(subject, topic, videoLink);
@@ -174,12 +176,12 @@ const Content = () => {
   }, [location.pathname]);
 
   return (
-    <div className="grid grid-cols-3 p-7 gap-5 items-start">
-      <div className="w-11/12 mx-auto bg-[#ebe7de5b] p-2 rounded-md border shadow-lg">
+    <div className="md:grid md:grid-cols-3 p-7 gap-5 items-start ">
+      <div className="w-full md:w-11/12 mb-8 mx-auto bg-[#ebe7de5b] p-2 rounded-md border shadow-lg">
         <h1 className="text-2xl font-bold text-center my-2 underline border-b-2 pb-4 cursor-pointer">
           <Link to={`/topics/${subject}`}>{Subject}</Link>
         </h1>
-        <p className="text-xl text-center font-semibold my-4">{topic} </p>
+        <p className="text-2xl text-center font-semibold my-4">{topic} </p>
         <div className="flex flex-col md:space-y-5 space-y-8 p-1">
           <p
             className={`text-xl flex items-center gap-3 cursor-pointer ${
