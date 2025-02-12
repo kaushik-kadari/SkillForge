@@ -18,6 +18,8 @@ function Topic() {
   }
   const { user } = useAuth();
   const [tasks, setTasks] = useState([]);
+  const [disabled, setDisabled] = useState(true);
+  const [shortNotes, setShortNotes] = useState("");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -577,6 +579,10 @@ function Topic() {
     }
   };
 
+  const handleChange = async (e) => {
+    setShortNotes(e.target.value);
+  };
+
   return (
     <div className="lg:grid lg:grid-cols-3 gap-10 p-10 flex flex-col">
       <div className="text-center bg-[#ebe7de5b] p-2 rounded-md shadow-lg border">
@@ -594,6 +600,23 @@ function Topic() {
         <h1 className="bg-[#e4e2e2] text-2xl text-center rounded-md my-2" >
           Short Notes
         </h1>
+        <textarea 
+        className={`w-[95%] h-[100%] min-h-[30vh] max-h-[55vh] bg-[#ebe7de34] rounded-md ${disabled ? "cursor-not-allowed" : ""}`} 
+        disabled={disabled}
+        value={shortNotes}
+        onChange={(e) => handleChange(e)}
+        />
+        <div>
+          {disabled ? (
+            <>
+            <button className={`w-[20%] h-[10%] bg-black text-white rounded-md my-2 font-semibold text-sm py-2`} onClick={() => setDisabled(false)}>Edit</button>
+            </>
+          ) : (
+            <>
+            <button className={`w-[20%] h-[10%] bg-black text-white rounded-md my-2 font-semibold text-sm py-2`} onClick={() => setDisabled(true)}>Save</button>
+            </>
+          )}
+        </div>
       </div>
     </div>
     // <></>
