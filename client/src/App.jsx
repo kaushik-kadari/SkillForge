@@ -12,13 +12,13 @@ import GenerateContent from "./components/GenerateContent/GenerateContent";
 import NotFound from "./pages/NotFound.jsx";
 import Carousel from "./components/Carousel/Carousel";
 import Progress from "./components/Progress/Progress";
-import Sample from "./Sample.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "./services/AuthService";
+import CodeEditor from "./pages/CodeEditor.jsx";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -115,7 +115,14 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="/sample" element={<Sample />} />
+            <Route
+              path="/codePlay"
+              element={
+                <ProtectedRoute condition={true}>
+                  <CodeEditor />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

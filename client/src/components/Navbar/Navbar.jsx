@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CgProfile } from 'react-icons/cg';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Content from '../Content/Content';
-import GenerateContent from '../GenerateContent/GenerateContent';
-import Progress from '../Progress/Progress';
-import Topic from '../Topic/Topic';
 import { useAuth } from '../../services/AuthService';
 
 const Navbar = () => {
@@ -169,16 +165,17 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                to="/help"
-                className={`${location.pathname === '/help' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
-                onClick={() => navigateTo('/help')}
+                to="/codePlay"
+                className={`${pathname[1] === 'codePlay' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
+                onClick={() => navigateTo('/codePlay')}
               >
-                Help              </Link>
+                CodePlay
+              </Link>
             </li>
             <li>
               <Link
                 to="/contact"
-                className={`${location.pathname === '/contact' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
+                className={`${pathname[1] === 'contact' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
                 onClick={() => navigateTo('/contact')}
               >
                 Contact
