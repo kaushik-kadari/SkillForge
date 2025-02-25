@@ -19,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css"; // Import CSS
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "./services/AuthService";
 import CodeEditor from "./pages/CodeEditor.jsx";
+import Settings from "./pages/Settings.jsx";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -120,6 +121,14 @@ const App = () => {
               element={
                 <ProtectedRoute condition={true}>
                   <CodeEditor />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute condition={true}>
+                  <Settings />
                 </ProtectedRoute>
               }
             />

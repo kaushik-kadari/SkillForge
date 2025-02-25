@@ -156,15 +156,6 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                to="/about"
-                className={`${pathname[1] === 'about' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
-                onClick={() => navigateTo('/about')}
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
                 to="/codePlay"
                 className={`${pathname[1] === 'codePlay' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
                 onClick={() => navigateTo('/codePlay')}
@@ -172,6 +163,16 @@ const Navbar = () => {
                 CodePlay
               </Link>
             </li>
+            {/* <li>
+              <Link
+                to="/about"
+                className={`${pathname[1] === 'about' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
+                onClick={() => navigateTo('/about')}
+              >
+                About
+              </Link>
+            </li>
+            
             <li>
               <Link
                 to="/contact"
@@ -180,7 +181,7 @@ const Navbar = () => {
               >
                 Contact
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

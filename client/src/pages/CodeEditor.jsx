@@ -5,7 +5,7 @@ import axios from "axios";
 const languages = {
   javascript: { id: 63, comment: "// Write your JavaScript code here..." },
   python: { id: 71, comment: "# Write your Python code here..." },
-  java: { id: 62, comment: "// Write your Java code here..." },
+  java: { id: 62, comment: "// Write your Java code here...\n// Make sure the class name is Main" },
   c: { id: 50, comment: "// Write your C code here..." },
   cpp: { id: 54, comment: "// Write your C++ code here..." },
   csharp: { id: 51, comment: "// Write your C# code here..." },
@@ -13,13 +13,13 @@ const languages = {
   swift: { id: 83, comment: "// Write your Swift code here..." },
   typescript: { id: 74, comment: "// Write your TypeScript code here..." },
   go: { id: 60, comment: "// Write your Go code here..." },
-  kotlin: { id: 78, comment: "// Write your Kotlin code here..." },
-  php: { id: 68, comment: "// Write your PHP code here..." },
+  // kotlin: { id: 78, comment: "// Write your Kotlin code here..." },
+  php: { id: 68, comment: "<?php\n// Write your PHP code here...\n\n?>" },
 };
 
 const CodeEditor = () => {
   const [code, setCode] = useState("");
-  const [language, setLanguage] = useState("python");
+  const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
   const [compileError, setCompileError] = useState(false);
 
@@ -98,7 +98,8 @@ const CodeEditor = () => {
     const blob = new Blob([code], { type: "text/plain" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `${language}_code.txt`;
+    const date = new Date().toISOString().split("T")[0];
+    link.download = `${language}_code_${date}.txt`;
     link.click();
   };
 

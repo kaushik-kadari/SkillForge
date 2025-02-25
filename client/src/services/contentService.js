@@ -88,3 +88,24 @@ export const addTask = async (email, task) => {
         return error;
     }
 }
+
+export const updateUser = async (oldEmail, newEmail, name) => {
+    try {
+        const response = await axios.post("http://localhost:3000/api/update-user", { oldEmail, newEmail, name });
+        console.log(response);
+        return { status : true, user : response.data }; 
+    } catch (error) {
+       return { status: false, message: error.response.data.message };
+    }
+}
+
+export const updatePassword = async (email, oldPassword, newPassword) => {
+    try {
+        const response = await axios.post("http://localhost:3000/api/update-password", { email, oldPassword, newPassword });
+        console.log(response);
+        return { status: true, message: response.data.message };
+    } catch (error) {
+        // console.log(error);
+        return { status: false, message: error.response.data.message };
+    }
+};

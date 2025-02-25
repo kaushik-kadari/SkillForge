@@ -174,3 +174,58 @@ exports.getTasks = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.updateUser = async (req, res) => {
+    try {
+        console.log(req.body);
+        const { oldEmail, newEmail, name } = req.body;
+
+        const existingUser = await User.findOne({ email: newEmail });
+        if (existingUser) {
+            return res.status(404).json({ message: "Email already exists" });
+        }
+
+        const update = {};
+
+        if(newEmail) update.email = newEmail;
+        update.name = name;
+
+        const user = await User.findOneAndUpdate(
+            { email: oldEmail }, 
+            { $set: update }, 
+            { new: true, runValidators: true } 
+        );        
+
+        res.status(200).json({ email: user.email, name: user.name });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.updatePassword = async (req, res) => {
+    try {
+        const { email, oldPassword, newPassword } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isPasswordValid = await bcrypt.compare(String(oldPassword), user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
+
+        const hashedPassword = await bcrypt.hash(String(newPassword), 10);
+        const updatedUser = await User.findOneAndUpdate(
+            { email }, 
+            { $set: { password: hashedPassword } }, 
+            { new: true, runValidators: true } 
+        );        
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

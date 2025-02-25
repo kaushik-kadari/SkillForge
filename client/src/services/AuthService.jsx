@@ -8,12 +8,10 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const token = localStorage.getItem("token");
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    token ? true : false
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(token ? true : false);
   const [user, setUser] = useState({
-    name: "",
-    email: "",
+    name: localStorage.getItem("name"),
+    email: localStorage.getItem("email"),
   });
   const [badges, setBadges] = useState(
     Array.from({ length: 29 }, (_, i) => ({
@@ -24,27 +22,30 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-//   console.log(location.pathname);
+  //   console.log(location.pathname);
 
   const fetchBadges = async (email) => {
     // console.log(email);
     await getBadges(email).then((res) => {
       // console.log(res);
-      if(res) {
+      if (res) {
         setBadges(res.badges);
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
     // console.log("yes");
     const checkValidity = async (token) => {
       try {
-        const response = await axios.get("http://localhost:3000/api/validateJWT", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:3000/api/validateJWT",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         // console.log(response);
 
@@ -52,26 +53,31 @@ export const AuthProvider = ({ children }) => {
 
         const decodedToken = jwtDecode(token);
         setIsAuthenticated(true);
-        setUser({
-          name: decodedToken.name,
-          email: decodedToken.email,
-        });
+        if (!user.name || !user.email) {
+          localStorage.setItem("name", decodedToken.name);
+          localStorage.setItem("email", decodedToken.email);
+          setUser({
+            name: decodedToken.name,
+            email: decodedToken.email,
+          });
+        }
         await fetchBadges(decodedToken.email);
-      } catch (error) { 
+      } catch (error) {
         // console.error(error);
         logout();
       }
-    }
+    };
 
     const token = localStorage.getItem("token");
     if (token) checkValidity(token);
 
-    if(isAuthenticated && !token) logout();
-  
+    if (isAuthenticated && !token) logout();
   }, [location.pathname]);
 
   const logout = async () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    localStorage.removeItem("email");
     setIsAuthenticated(false);
     setUser({
       name: "",
@@ -80,7 +86,7 @@ export const AuthProvider = ({ children }) => {
     await addBadges(user.email, badges);
     // window.location.href = "/login";
     navigate("/login");
-  }; 
+  };
 
   const addBadge = async (id) => {
     // console.log(id);
@@ -88,17 +94,28 @@ export const AuthProvider = ({ children }) => {
       const updatedBadges = prevBadges.map((badge) =>
         badge.id === id ? { ...badge, count: badge.count + 1 } : badge
       );
-      // console.log(updatedBadges); 
-      if(user.email) addBadges(user.email, updatedBadges);
+      // console.log(updatedBadges);
+      if (user.email) addBadges(user.email, updatedBadges);
       return updatedBadges;
     });
-    
+
     // setBadges(badges.map((badge) => badge.id == id ? { id, count: badge.count + 1 } : badge));
     // console.log(badges);
-  }
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, logout, badges, addBadge, setBadges }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        setIsAuthenticated,
+        user,
+        setUser,
+        logout,
+        badges,
+        addBadge,
+        setBadges,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

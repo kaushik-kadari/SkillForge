@@ -16,5 +16,7 @@ router.get('/get-badges/:email', userController.getBadges);
 router.post('/add-badges', userController.addBadges);
 router.get('/get-tasks/:email', userController.getTasks);
 router.post('/add-task', userController.addTask);
+router.post('/update-password', userController.updatePassword);
+router.post('/update-user', userController.updateUser);
 
 module.exports = router;
