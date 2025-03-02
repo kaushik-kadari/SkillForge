@@ -103,7 +103,7 @@ const Login = () => {
         </button>
         <p className="text-sm text-center font-light text-red-500 mt-3">
           <Link
-            to="/forgot-password"
+            to="/resetPassword"
             className="font-medium hover:underline"
           >
             Forgot password?

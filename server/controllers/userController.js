@@ -1,14 +1,15 @@
 // User controller logic
 const User = require('../models/userModel');
-const Subtopic = require('../models/subtopicModel'); // Correcting the import statement
+const Subtopic = require('../models/subtopicModel'); 
 const Feedback = require('../models/feedbackModel');
 const VideoLink = require('../models/videoLinks');
 const Badge = require('../models/badgeModel');
 const Task = require('../models/tasksModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
-const SECRET_KEY = 'd8be994c77d05f0b6e22949d6b21ca871c46f52839bc9630ce1d028e30231945'; // Replace with your secret key
+const SECRET_KEY = 'd8be994c77d05f0b6e22949d6b21ca871c46f52839bc9630ce1d028e30231945'; // Secret key for JWT
 
 exports.getSubtopics = async (req, res) => {
     try {
@@ -87,7 +88,7 @@ exports.signUp = async (req, res) => {
     try {
         const { name, email, password, phone, college } = req.body;
         const hashedPassword = await bcrypt.hash(String(password), 10);
-        console.log(hashedPassword);
+        // console.log(hashedPassword);
         const user = new User({ name, email, password: hashedPassword, phone, college });
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -228,4 +229,71 @@ exports.updatePassword = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+exports.resetPassword = async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  
+    const token = jwt.sign({ email: user.email }, SECRET_KEY, {
+      expiresIn: '5m',
+    });
+    user.resetPasswordToken = token;
+    await user.save();
+    const resetLink = `${req.headers.origin}/setPassword/${token}`;
+
+
+  // Nodemailer setup
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      auth: {
+        user: "nmcgchatbot@gmail.com",
+        pass: "ksvj dljn tzrv dmvi"
+      }
+  });
+
+
+  // Send email with reset link
+  const mailOptions = {
+    from: "nmcgchatbot@gmail.com",
+    to: email,
+    subject: 'Password Reset Request',
+    html: `<p>Hello ${user.name},</p>
+          <p>You have requested to reset your password. Click the link below to reset your password:</p>
+          <p><a href="${resetLink}">${resetLink}</a></p>`
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Error sending email:', error);
+      return res.status(500).json({ message: error });
+    }
+
+    // console.log('Email sent:', info.response);
+    res.status(200).json({ message: 'Password reset email sent successfully' });
+  });
+};
+
+exports.setPassword = async (req, res) => {
+const { token, password } = req.body;
+
+try {
+  const isValidToken = jwt.verify(token, SECRET_KEY);
+
+  const user = await User.findOne({ email: isValidToken.email });
+
+  user.password = await bcrypt.hash(password, 10);
+  user.resetPasswordToken = undefined;
+  await user.save();
+
+  res.status(200).json({ message: 'Password has been reset' });
+} catch (error) {
+  res.status(500).json({ message: 'Password reset token is invalid or has expired', error: error.message });
+}
 };

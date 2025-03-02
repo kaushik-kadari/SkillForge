@@ -20,6 +20,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "./services/AuthService";
 import CodeEditor from "./pages/CodeEditor.jsx";
 import Settings from "./pages/Settings.jsx";
+import SetPassword from "./pages/SetPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -129,6 +131,22 @@ const App = () => {
               element={
                 <ProtectedRoute condition={true}>
                   <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/setPassword/:token"
+              element={
+                <ProtectedRoute condition={false}>
+                  <SetPassword />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resetPassword"
+              element={
+                <ProtectedRoute condition={false}>
+                  <ResetPassword />
                 </ProtectedRoute>
               }
             />
