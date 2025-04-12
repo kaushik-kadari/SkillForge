@@ -30,8 +30,10 @@ const SetPassword = () => {
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+    const url = import.meta.env.VITE_serverUrl;
+
     try {
-      const response = await axios.post('http://localhost:3000/api/set-password', { token, password });
+      const response = await axios.post(url + 'set-password', { token, password });
       toast.success(response.data.message, { autoClose: 2000 });
       await sleep(3000);
       navigate('/login');

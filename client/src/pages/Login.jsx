@@ -17,9 +17,10 @@ const Login = () => {
     event.preventDefault();
     // console.log({ email, password });
     // console.log(isAuthenticated);
+    const url = import.meta.env.VITE_serverUrl;
 
     axios
-      .post("http://localhost:3000/api/login", { email, password })
+      .post(url + "login", { email, password })
       .then(async (response) => {
         // console.log(response);
         localStorage.setItem("token", response.data.token);

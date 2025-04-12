@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode"; // Optional for token decoding
+import { jwtDecode } from "jwt-decode"; 
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { addBadges, getBadges } from "./contentService";
@@ -14,6 +14,8 @@ export const AuthProvider = ({ children }) => {
     email: localStorage.getItem("email"),
   });
   const [badges, setBadges] = useState([]);
+
+  const url = import.meta.env.VITE_serverUrl;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     const checkValidity = async (token) => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/validateJWT",
+          url + "validateJWT",
           {
             headers: {
               Authorization: `Bearer ${token}`,

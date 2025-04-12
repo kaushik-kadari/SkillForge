@@ -34,7 +34,8 @@ const Content = () => {
 
   // console.log(subject, topic, id);
 
-  const API_KEY = "AIzaSyD1BoZKkwFHlc67eoW8e56c06Zb7x2vYEk"; // yt key
+  const API_KEY = import.meta.env.VITE_ytKey; // yt key
+  const url = import.meta.env.VITE_serverUrl;
 
   const Content = location.pathname.split("/");
   const navigate = useNavigate();
@@ -103,7 +104,7 @@ const Content = () => {
 
     // Send the feedback data to the server
     axios
-      .post("http://localhost:3000/api/add-feedback", {
+      .post(url + "add-feedback", {
         name,
         email,
         subject,

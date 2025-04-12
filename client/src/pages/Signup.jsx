@@ -32,10 +32,12 @@ const Signup = () => {
       college,
     };
 
-    console.log(formData);
+    // console.log(formData);
+
+    const url = import.meta.env.VITE_serverUrl;
 
     await axios
-      .post("http://localhost:3000/api/signup", formData)
+      .post(url + "signup", formData)
       .then(async (response) => {
         // console.log(response);
         const badges =  Array.from({ length: 29 }, (_, i) => ({

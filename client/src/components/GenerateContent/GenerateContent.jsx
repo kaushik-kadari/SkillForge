@@ -5,8 +5,9 @@ import { addContent, getContent } from "../../services/contentService";
 import { FallingLines } from "react-loader-spinner";
 
 const GenerateContent = ({ topic, subject }) => {
-  const apiKey = "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";
+  const apiKey = import.meta.env.VITE_groqApiKey;
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
+
   const [content, setContent] = useState("");
 
   const generateContent = async () => {

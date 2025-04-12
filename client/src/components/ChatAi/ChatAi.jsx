@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { RiRobot3Line } from "react-icons/ri";
 
 const ChatAi = ({ subject, topic }) => {
-  const apiKey = "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";
+  const apiKey = import.meta.env.VITE_groqApiKey;
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
   const [query, setQuery] = useState(""); // User's query

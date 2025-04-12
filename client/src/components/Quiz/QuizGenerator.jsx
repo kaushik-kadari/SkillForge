@@ -20,7 +20,7 @@ const Quiz = ({ subject, topic, id }) => {
   const [fetched, setFetched] = useState(false);
   const { addBadge, user } = useAuth();
 
-  const apiKey = "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";
+  const apiKey = import.meta.env.VITE_groqApiKey;
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
   useEffect(() => {

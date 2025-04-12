@@ -22,6 +22,8 @@ export default function InterviewBot() {
   const textAreaRef = useRef(null);
   const synthRef = useRef(window.speechSynthesis);
 
+  const url = import.meta.env.VITE_serverUrl;
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -37,7 +39,7 @@ export default function InterviewBot() {
 
   const fetchInterviewHistory = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/interview?email=${user.email}`);
+      const res = await axios.get(url + "interview?email=" + user.email);
       setInterviewHistory(res.data);
       if (res.data.length > 0) loadPreviousInterview(res.data[0]);
     } catch (error) {
@@ -91,7 +93,7 @@ export default function InterviewBot() {
     }
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3000/api/start-interview", {
+      const res = await axios.post(url + "start-interview", {
         email: user.email,
         topic,
       });
@@ -108,7 +110,7 @@ export default function InterviewBot() {
       setInterviewHistory([newInterview, ...interviewHistory]);
       setTopic("");
 
-      await axios.post("http://localhost:3000/api/save-interview", newInterview);
+      await axios.post(url + "save-interview", newInterview);
       fetchInterviewHistory();
     } catch (error) {
       console.error("Error starting interview:", error);
@@ -126,7 +128,7 @@ export default function InterviewBot() {
     }
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3000/api/answer", { sessionId, answer });
+      const res = await axios.post(url + "answer", { sessionId, answer });
 
       const updatedChatHistory = [
         ...chatHistory,
@@ -137,7 +139,7 @@ export default function InterviewBot() {
       setChatHistory(updatedChatHistory);
       setAnswer("");
 
-      await axios.post("http://localhost:3000/api/update-interview", {
+      await axios.post(url + "update-interview", {
         sessionId,
         email: user.email,
         chatHistory: updatedChatHistory,
@@ -155,9 +157,9 @@ export default function InterviewBot() {
     setLoading(false);
   };
 
-  const deleteInterview = async (sessionId) => {
+  const deleteInterview = async (sessionId) => {  
     try {
-      await axios.delete(`http://localhost:3000/api/delete-interview?sessionId=${sessionId}&email=${user.email}`);
+      await axios.delete(url + "delete-interview?sessionId=" + sessionId + "&email=" + user.email);
       setInterviewHistory(interviewHistory.filter((interview) => interview.sessionId !== sessionId));
       fetchInterviewHistory();
       toast.success("Interview deleted successfully!");
