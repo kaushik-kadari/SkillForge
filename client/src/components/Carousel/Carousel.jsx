@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Content from '../Content/Content';
-import GenerateContent from '../GenerateContent/GenerateContent';
-import Progress from '../Progress/Progress';
-import Topic from '../Topic/Topic';
 
 const Carousel = ({ progress }) => {
   const [currentSlide, setCurrentSlide] = useState(0);

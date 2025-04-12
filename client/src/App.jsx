@@ -10,12 +10,10 @@ import Topic from "./components/Topic/Topic";
 import Content from "./components/Content/Content";
 import GenerateContent from "./components/GenerateContent/GenerateContent";
 import NotFound from "./pages/NotFound.jsx";
-import Carousel from "./components/Carousel/Carousel";
-import Progress from "./components/Progress/Progress";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import CSS
+import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "./services/AuthService";
 import CodeEditor from "./pages/CodeEditor.jsx";

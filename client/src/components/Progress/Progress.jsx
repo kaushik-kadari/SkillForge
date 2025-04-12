@@ -1,8 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import Content from '../Content/Content';
-import Carousel from '../Carousel/Carousel';
-import Topic from '../Topic/Topic';
 
 const Progress = ({ progress }) => {
   const [animatedProgress, setAnimatedProgress] = useState(
