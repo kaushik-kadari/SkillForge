@@ -200,7 +200,7 @@ const Quiz = ({ subject, topic, id }) => {
         {started && (
           <div>
             <p className="text-xl mb-4 font-semibold">
-             {currentQuestion + 1}) {questions[currentQuestion].question}
+             {currentQuestion + 1} {questions[currentQuestion].question}
             </p>
             <div>
               {questions[currentQuestion].options.map((option, index) => (
@@ -220,8 +220,8 @@ const Quiz = ({ subject, topic, id }) => {
                       }}
                       checked={selectedOptions[currentQuestion] === option}
                     />
+                    <span className="ml-2">{option}</span>
                   </label>
-                    {option}
                 </div>
               ))}
             </div>

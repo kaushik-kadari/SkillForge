@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { addBadges } from "../services/contentService";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -35,11 +36,16 @@ const Signup = () => {
 
     await axios
       .post("http://localhost:3000/api/signup", formData)
-      .then((response) => {
+      .then(async (response) => {
         // console.log(response);
+        const badges =  Array.from({ length: 29 }, (_, i) => ({
+          id: i + 1,
+          count: 0,
+        }));
+        await addBadges(email, badges);
         toast.success(response.data.message, { autoClose: 1000 });
         setTimeout(() => {
-          navigate("/login");
+            navigate("/login");
         }, 2000);
       })
       .catch((error) => {

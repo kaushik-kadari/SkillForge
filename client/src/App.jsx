@@ -22,6 +22,7 @@ import CodeEditor from "./pages/CodeEditor.jsx";
 import Settings from "./pages/Settings.jsx";
 import SetPassword from "./pages/SetPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import InterviewBot from "./components/InterviewBot/InterviewBot";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -123,6 +124,14 @@ const App = () => {
               element={
                 <ProtectedRoute condition={true}>
                   <CodeEditor />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/interviewBot"
+              element={
+                <ProtectedRoute condition={true}>
+                  <InterviewBot />
                 </ProtectedRoute>
               }
             />

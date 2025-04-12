@@ -107,7 +107,7 @@ const Navbar = () => {
           </button>
         </div>
         <div
-          className={`items-center  justify-between md:flex md:w-auto md:order-1 ${isMobileMenuOpen ? 'fixed top-0 right-0 bottom-0 left-0 z-50' : 'hidden'}`}
+          className={`items-center  justify-between md:flex md:w-auto md:order-1 ${isMobileMenuOpen ? 'fixed top-0 right-0 bottom-0 left-0 z-50 bg-[#e6e6e666]' : 'hidden'}`}
           id="navbar-user"
           style={{ backdropFilter: isMobileMenuOpen ? 'blur(8px)' : 'none' }}
         >
@@ -163,25 +163,15 @@ const Navbar = () => {
                 CodePlay
               </Link>
             </li>
-            {/* <li>
-              <Link
-                to="/about"
-                className={`${pathname[1] === 'about' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
-                onClick={() => navigateTo('/about')}
-              >
-                About
-              </Link>
-            </li>
-            
             <li>
               <Link
-                to="/contact"
-                className={`${pathname[1] === 'contact' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
-                onClick={() => navigateTo('/contact')}
+                to="/interviewBot"
+                className={`${pathname[1] === 'interviewBot' ? 'bg-[#4f4f4f] text-white' : ''} text-sm font-semibold block py-2 px-3 text-black rounded-full transition-colors duration-200 hover:bg-[#4f4f4f] hover:text-white md:p-2`}
+                onClick={() => navigateTo('/interviewBot')}
               >
-                Contact
+                Interview Bot
               </Link>
-            </li> */}
+            </li>
           </ul>
         </div>
       </div>

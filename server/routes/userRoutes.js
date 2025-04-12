@@ -20,5 +20,19 @@ router.post('/update-password', userController.updatePassword);
 router.post('/update-user', userController.updateUser);
 router.post('/reset-password', userController.resetPassword);
 router.post('/set-password', userController.setPassword);
+router.post('/addNotes', userController.addNotes);
+router.get('/getNotes/:email/:subject', userController.getNotes);
+
+//interview
+router.post("/start-interview", userController.startInterview);
+router.post("/answer",userController.answerInterview);
+router.post("/end-interview",userController.endInterview);
+router.get("/interview",userController.interview);
+router.post("/save-interview",userController.saveInterview);
+router.post("/update-interview",userController.updateInterview);
+router.delete("/delete-interview",userController.deleteInterview);
+
+
+
 
 module.exports = router;

@@ -3,10 +3,9 @@ import { Link } from "react-router-dom";
 import Content from "../Content/Content";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { getTasks } from "../../services/contentService";
+import { getTasks, getNotes, addNotes } from "../../services/contentService";
 import { useAuth } from "../../services/AuthService";
 import { HiBadgeCheck } from "react-icons/hi";
-
 function Topic() {
   const { subject } = useParams();
   // console.log(subject);
@@ -34,7 +33,20 @@ function Topic() {
       }
     };
 
+    const fetchNotes = async () => {
+      if (user.email) {
+        try {
+          const res = await getNotes(user.email, subject);
+          // console.log(res);
+          setShortNotes(res.notes);
+        } catch (error) {
+          console.error("Error fetching notes:", error);
+        }
+      }
+    };
+    
     fetchTasks(); 
+    fetchNotes();
 
   }, [user.email]);
 
@@ -613,7 +625,7 @@ function Topic() {
             </>
           ) : (
             <>
-            <button className={`w-[20%] h-[10%] bg-black text-white rounded-md my-2 font-semibold text-sm py-2`} onClick={() => setDisabled(true)}>Save</button>
+            <button className={`w-[20%] h-[10%] bg-black text-white rounded-md my-2 font-semibold text-sm py-2`} onClick={() => {setDisabled(true); addNotes(user.email, subject, shortNotes)}}>Save</button>
             </>
           )}
         </div>

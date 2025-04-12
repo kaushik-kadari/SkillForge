@@ -1,4 +1,7 @@
 const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config();
+
 const mongoose = require('mongoose');
 const config = require('./config/config');
 const userRoutes = require('./routes/userRoutes');
@@ -12,6 +15,8 @@ app.use(cors());
 
 app.use(authMiddleware);
 app.use('/api', userRoutes);
+
+
 
 mongoose.connect(config.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {

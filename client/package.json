@@ -15,6 +15,7 @@
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "flowbite": "^2.5.1",
+    "framer-motion": "^12.6.5",
     "groq-sdk": "^0.7.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.476.0",

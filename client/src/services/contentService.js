@@ -109,3 +109,26 @@ export const updatePassword = async (email, oldPassword, newPassword) => {
         return { status: false, message: error.response.data.message };
     }
 };
+
+export const addNotes = async (email, subject, notes) => {
+    try {
+        await axios.post("http://localhost:3000/api/addNotes", {
+            email: email,
+            subject: subject,
+            notes: notes
+        });
+    } catch (error) {
+        console.error("Error adding notes:", error);
+    }
+}
+
+export const getNotes = async (email, subject) => {
+    try {
+        // console.log(email);
+        const response = await axios.get("http://localhost:3000/api/getNotes" + "/" + email + "/" + subject);
+        return response.data;
+    } catch (error) {
+        // console.error(error);
+        return error;
+    }
+}

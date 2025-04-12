@@ -13,12 +13,7 @@ export const AuthProvider = ({ children }) => {
     name: localStorage.getItem("name"),
     email: localStorage.getItem("email"),
   });
-  const [badges, setBadges] = useState(
-    Array.from({ length: 29 }, (_, i) => ({
-      id: i + 1,
-      count: 0,
-    }))
-  );
+  const [badges, setBadges] = useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,9 +70,8 @@ export const AuthProvider = ({ children }) => {
   }, [location.pathname]);
 
   const logout = async () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    localStorage.removeItem("email");
+    localStorage.clear();
+    sessionStorage.clear();
     setIsAuthenticated(false);
     setUser({
       name: "",
