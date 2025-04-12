@@ -69,6 +69,7 @@ const CodeEditor = () => {
   }, [code, language]);
 
   const handleRun = async () => {
+    setOutput("Running...");
     const res = await axios.post("https://emkc.org/api/v2/piston/execute", {
       language: language,
       version: languages[language].version,
