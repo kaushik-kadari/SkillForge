@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
       name: "",
       email: "",
     });
-    await addBadges(user.email, badges);
+    if(user.email && badges.length > 0) await addBadges(user.email, badges);
     // window.location.href = "/login";
     navigate("/login");
   };
