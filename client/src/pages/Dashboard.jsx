@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { HiBadgeCheck } from "react-icons/hi";
 import Progress from '../components/Progress/Progress';
 import { useAuth } from '../services/AuthService';
+import { FallingLines } from 'react-loader-spinner';
 
 const Dashboard = () => {
   const topics = [
@@ -22,7 +23,7 @@ const Dashboard = () => {
     { label: "Aptitude", value: 0 }
   ];
 
-  let { badges } = useAuth();
+  let { badges, loading } = useAuth();
   badges = badges.filter((badge) => badge.id >= 1 && badge.id <= 5);
   // console.log(badges);
 
@@ -33,6 +34,17 @@ const Dashboard = () => {
   }
 
   const heading="Dashboard";
+
+  if(loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
+      <FallingLines
+        color="black"
+        width="150"
+        visible={true}
+        ariaLabel="falling-circles-loading"
+      />
+    </div>
+  );
 
   return (
     <>

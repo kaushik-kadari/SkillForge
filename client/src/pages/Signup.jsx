@@ -13,17 +13,21 @@ const Signup = () => {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [college, setCollege] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
+    if (isLoading) return;
    
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
 
+    setIsLoading(true);
     const formData = {
       name: firstName + " " + lastName,
       email,
@@ -32,30 +36,26 @@ const Signup = () => {
       college,
     };
 
-    // console.log(formData);
-
     const url = import.meta.env.VITE_serverUrl;
 
-    await axios
-      .post(url + "signup", formData)
-      .then(async (response) => {
-        // console.log(response);
-        const badges =  Array.from({ length: 29 }, (_, i) => ({
-          id: i + 1,
-          count: 0,
-        }));
-        await addBadges(email, badges);
-        toast.success(response.data.message, { autoClose: 1000 });
-        setTimeout(() => {
-            navigate("/login");
-        }, 2000);
-      })
-      .catch((error) => {
-        // console.log(error);
-        let msg = (error?.response) ?  error.response.data.message : error.message;
-        toast.error(msg);
-      })
-      .finally(() => {
+    try {
+      const response = await axios.post(url + "signup", formData);
+      const badges = Array.from({ length: 29 }, (_, i) => ({
+        id: i + 1,
+        count: 0,
+      }));
+      await addBadges(email, badges);
+      toast.success(response.data.message, { autoClose: 1000 });
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      const msg = error?.response?.data?.message || error.message;
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+      // Don't clear the form on error to prevent user frustration
+      if (!error) {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
@@ -63,7 +63,8 @@ const Signup = () => {
         setLastName("");
         setPhone("");
         setCollege("");
-      });
+      }
+    }
   };
 
   return (
@@ -204,9 +205,20 @@ const Signup = () => {
         </div>
         <button
           type="submit"
-          className="text-white hover:bg-[#5e5e5e] bg-black  focus:outline-none font-semibold rounded-md text-sm px-5 py-2.5 text-center w-full"
+          disabled={isLoading}
+          className={`text-white ${!isLoading ? 'hover:bg-[#5e5e5e]' : 'opacity-70 cursor-not-allowed'} bg-black focus:outline-none font-semibold rounded-md text-sm px-5 py-2.5 text-center w-full transition-opacity`}
         >
-          Signup
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Creating Account...
+            </div>
+          ) : (
+            'Signup'
+          )}
         </button>
         <p className="text-sm text-center mt-3 font-light text-gray-500">
           Already have an account?{" "}

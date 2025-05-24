@@ -3,9 +3,10 @@ import { User, Mail, Lock, Camera, CheckCircle2, AlertCircle } from "lucide-reac
 import { useAuth } from "../services/AuthService"
 import { updateUser, updatePassword } from "../services/contentService"
 import { toast } from "react-toastify"
+import { FallingLines } from "react-loader-spinner"
 
 export default function Settings() {
-  const { user, setUser } = useAuth()
+  const { user, setUser, loading } = useAuth()
   const [successMessage, setSuccessMessage] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [isEditing, setIsEditing] = useState(false)
@@ -73,6 +74,17 @@ export default function Settings() {
       email: user.email,
     }))
   }, [user])
+
+  if(loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
+      <FallingLines
+        color="black"
+        width="150"
+        visible={true}
+        ariaLabel="falling-circles-loading"
+      />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

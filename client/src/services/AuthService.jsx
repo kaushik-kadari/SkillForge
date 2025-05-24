@@ -9,6 +9,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const token = localStorage.getItem("token");
   const [isAuthenticated, setIsAuthenticated] = useState(token ? true : false);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({
     name: localStorage.getItem("name"),
     email: localStorage.getItem("email"),
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }) => {
     // console.log("yes");
     const checkValidity = async (token) => {
       try {
+        setLoading(true);
         const response = await axios.get(
           url + "validateJWT",
           {
@@ -62,6 +64,9 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         // console.error(error);
         logout();
+      }
+      finally {
+        setLoading(false);
       }
     };
 
@@ -110,6 +115,8 @@ export const AuthProvider = ({ children }) => {
         badges,
         addBadge,
         setBadges,
+        loading,
+        setLoading,
       }}
     >
       {children}
