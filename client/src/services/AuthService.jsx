@@ -9,7 +9,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const token = localStorage.getItem("token");
   const [isAuthenticated, setIsAuthenticated] = useState(token ? true : false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     name: localStorage.getItem("name"),
     email: localStorage.getItem("email"),
