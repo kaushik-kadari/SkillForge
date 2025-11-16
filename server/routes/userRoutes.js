@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 
 router.get('/', userController.getSubtopics);
-// router.get('/', (req, res) => res.send('Hello World!'));
+router.get('/hello', (req, res) => res.send('Hello World!'));
 router.post('/add-subtopic', userController.addSubtopic);
 router.get('/get-subtopic/:subject/:subtopic', userController.getSubtopicBySubjectAndName);
 router.post('/add-feedback', userController.addFeedback);
