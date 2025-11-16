@@ -383,7 +383,7 @@ exports.startInterview = async (req, res) => {
           content: `Ask an initial interview question about ${topic}.`,
         },
       ],
-      model: "llama3-8b-8192",
+      model: "llama-3.1-8b-instant",
     });
 
     const initialQuestion = response.choices[0].message.content;
@@ -423,7 +423,7 @@ exports.startInterview = async (req, res) => {
           content: `Ask an initial interview question about ${topic}.`,
         },
       ],
-      model: "llama3-8b-8192",
+      model: "llama-3.1-8b-instant",
     });
 
     const initialQuestion = response.choices[0].message.content;
@@ -477,7 +477,7 @@ exports.answerInterview = async (req, res) => {
           content: `Previous question: "${lastQuestion}". User answered: "${answer}". Ask a logical follow-up question.`,
         },
       ],
-      model: "llama3-8b-8192",
+      model: "llama-3.1-8b-instant",
     });
 
     const followUpQuestion = response.choices[0].message.content;

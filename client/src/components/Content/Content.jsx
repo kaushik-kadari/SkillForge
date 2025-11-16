@@ -126,7 +126,7 @@ const Content = () => {
   const generateVideoLink = async (subject, topic) => {
     try {
       // console.log(subject, topic);
-      const searchQuery = `${subject} ${topic}`;
+      const searchQuery = `"${topic} in ${subject}"`;
       const maxResults = 1; // Adjust as needed
       const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
         searchQuery
@@ -134,7 +134,9 @@ const Content = () => {
 
       const response = await axios.get(url);
       // console.log("vid id", response.data.items[0].id.videoId);
-      return "https://www.youtube.com/embed/" + response.data.items[0].id.videoId;
+      return (
+        "https://www.youtube.com/embed/" + response.data.items[0].id.videoId
+      );
     } catch (error) {
       console.error("Error generating video link:", error);
       return error;
@@ -147,19 +149,22 @@ const Content = () => {
 
   const handleVideoLink = async () => {
     try {
-      // console.log("handleVideoLink");
       const response = await getVideoLink(subject, topic);
-      // console.log(response);
-      if (response.status === 404 || response.status === 500) {
+
+      // Success case (2xx)
+      setVideoLink(response.videoLink);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // Generate new video link
         const videoLink = await generateVideoLink(subject, topic);
         setVideoLink(videoLink);
-        const res = await addVideoLink(subject, topic, videoLink);
-        // console.log(res);
+
+        // Save to database
+        await addVideoLink(subject, topic, videoLink);
+        return;
       } else {
-        setVideoLink(response.videoLink);
+        console.error("Error fetching video link:", error);
       }
-    } catch (error) {
-      console.error("Error fetching video link:", error);
     }
   };
 
@@ -251,7 +256,7 @@ const Content = () => {
 
       {showQuiz && (
         <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10 rounded-md border shadow-lg min-h-[80vh]">
-          <Quiz subject={subject} topic={topic} id={id}/>
+          <Quiz subject={subject} topic={topic} id={id} />
         </div>
       )}
 
@@ -263,13 +268,14 @@ const Content = () => {
 
       {showFeedback && (
         <div className="w-full mx-auto col-span-2 bg-[#ebe7de5b] p-10  shadow-lg min-h-[80vh]">
-          <h1 className="text-2xl font-bold mb-2 text-center">
-            { topic }
-          </h1>
+          <h1 className="text-2xl font-bold mb-2 text-center">{topic}</h1>
           <h1 className="text-xl font-semibold  text-center my-4">
             We value your feedback!
           </h1>
-          <form onSubmit={handleSubmit} className="flex flex-col border-none space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col border-none space-y-6"
+          >
             {questions.map((question, index) => (
               <div key={index} className="">
                 <p className="text-xl mb-2">{question}</p>

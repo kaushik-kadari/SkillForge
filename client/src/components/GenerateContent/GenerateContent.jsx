@@ -31,7 +31,7 @@ const GenerateContent = ({ topic, subject }) => {
             `,
           },
         ],
-        model: "llama3-8b-8192",
+        model: "llama-3.1-8b-instant",
       });
 
       const generatedContent = response.choices[0].message.content;
@@ -46,7 +46,8 @@ const GenerateContent = ({ topic, subject }) => {
   const addContentHandler = async (subject, subtopic, content) => {
     try {
       const response = await addContent(subject, subtopic, content);
-      // console.log(response);
+      console.log("addContentHandler");
+      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -55,17 +56,18 @@ const GenerateContent = ({ topic, subject }) => {
   const getContentHandler = async (subject, subtopic) => {
     try {
       const response = await getContent(subject, subtopic);
-
-      if (response.status === 404) {
-        // If 404, generate content and then add it to the database
-        const generatedContent = await generateContent();
-        await addContentHandler(subject, subtopic, generatedContent); // Only call addContentHandler after content is generated
-      } else {
-        setContent(response.content);
-      }
-      // console.log(response);
+      setContent(response.content);
+      console.log("getContentHandler");
+      console.log(response);
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 404) {
+        // 404 -> generate content
+        const generatedContent = await generateContent();
+        await addContentHandler(subject, subtopic, generatedContent);
+      } else {
+        // Other errors -> show error
+        console.error("Unexpected error:", error);
+      }
     }
   };
 
@@ -73,7 +75,7 @@ const GenerateContent = ({ topic, subject }) => {
     getContentHandler(subject, topic);
   }, [subject, topic]);
 
-  if(content == "") {
+  if (content == "") {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
         {/* <p className="text-3xl font-semibold my-4">

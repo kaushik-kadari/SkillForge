@@ -44,16 +44,22 @@ const ChatAi = ({ subject, topic }) => {
         messages: [
           {
             role: "user",
-            content: `Imagine you are a professional ${subject} Assistant. 
-            Dont say anything about the query which is out of context.
-            You have explained the concept of ${topic}. A student has asked a question related to this: '${query}'. 
-            Try to answer the question in short and clear manner. Unless the user asks to explain something in detail then 
-            Provide a clear answer for this question in max of 1000 words, ensuring it remains relevant to the ${topic} and ${subject} being discussed.
-            DO NOT ADD ANY ADDITIONAL CONTEXT OR EXPLANATION, AND STRICTLY FOLLOW THE ABOVE INSTRUCTIONS. 
-            IF THE QUERY IS NOT RELATED TO THE ${topic} AND ${subject} BEING DISCUSSED, DON'T ANSWER IT AT ALL.`
+            content: `You are an expert ${subject} tutor specializing in ${topic}. Your role is to help students understand concepts clearly and concisely.
+
+            CONTEXT: You have just explained the concept of ${topic}. A student is now asking: '${query}'
+
+            GUIDELINES:
+            1. Check if the query is relevant to ${topic} and ${subject}
+            2. If relevant: Provide a clear, concise answer (max 800 words unless detailed explanation is requested)
+            3. If irrelevant: Respond with "This question is outside the scope of our current topic. Let's focus on ${topic} related questions."
+            4. For greetings (hello, hi, etc.) and farewells (bye, goodbye): Respond naturally as a helpful tutor
+            5. Stay focused on the educational context - no extra explanations or off-topic content
+            6. Use simple, student-friendly language appropriate for learning
+
+            Remember: Your goal is to help students learn ${topic} effectively within the ${subject} domain.`
           },
         ],
-        model: "llama3-8b-8192", // Model used for generating responses
+        model: "llama-3.1-8b-instant", // Model used for generating responses
       });
 
       // Add the AI's response to the message list
