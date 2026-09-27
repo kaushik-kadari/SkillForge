@@ -111,10 +111,10 @@ npm run dev
 ##### `client/.env` Example
 
 ```env
-VITE_serverUrl=http://localhost:5000
-VITE_groqApiKey=your_groq_api_key
-VITE_ytKey=your_youtube_api_key
+VITE_serverUrl=http://localhost:5000/api/
 ```
+
+> Do **not** put API keys in the client env. Groq and YouTube keys belong only on the server.
 
 #### 3. Setup Backend
 
@@ -130,6 +130,7 @@ npm run start
 DB_URI=your_mongodb_connection_string
 SECRET_KEY=your_jwt_secret_key
 API_KEY=your_groq_api_key
+YT_API_KEY=your_youtube_api_key
 JUDGE0_API_KEY=your_rapidapi_judge0_ce_key
 JUDGE0_API_HOST=judge0-ce.p.rapidapi.com
 JUDGE0_API_URL=https://judge0-ce.p.rapidapi.com

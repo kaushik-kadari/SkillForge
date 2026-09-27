@@ -84,6 +84,11 @@ export default function InterviewBot() {
   const url = import.meta.env.VITE_serverUrl;
   const busy = starting || submitting || ending;
 
+  const authConfig = () => {
+    const token = localStorage.getItem("token");
+    return { headers: token ? { Authorization: `Bearer ${token}` } : {} };
+  };
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -110,11 +115,13 @@ export default function InterviewBot() {
 
   const fetchInterviewHistory = async () => {
     try {
-      const res = await axios.get(url + "interview?email=" + encodeURIComponent(user.email));
+      const res = await axios.get(
+        url + "interview?email=" + encodeURIComponent(user.email),
+        authConfig()
+      );
       setInterviewHistory(res.data || []);
-      // Do not auto-load the latest interview — let the user start or pick one
     } catch (error) {
-      console.error("Error fetching interview history:", error);
+      console.error("Error fetching interview history");
     }
   };
 
@@ -143,10 +150,14 @@ export default function InterviewBot() {
     setIsTranscribing(true);
     try {
       const audioBase64 = await blobToBase64(blob);
-      const res = await axios.post(url + "transcribe", {
-        audioBase64,
-        mimeType: blob.type || "audio/webm",
-      });
+      const res = await axios.post(
+        url + "transcribe",
+        {
+          audioBase64,
+          mimeType: blob.type || "audio/webm",
+        },
+        authConfig()
+      );
       const text = (res.data?.text || "").trim();
       if (text) {
         setAnswer((prev) => (prev ? `${prev.trim()} ${text}` : text));
@@ -154,7 +165,7 @@ export default function InterviewBot() {
         toast.warn("Couldn't catch that. Try speaking again.");
       }
     } catch (error) {
-      console.error("Transcription error:", error);
+      console.error("Transcription error");
       toast.error(error.response?.data?.error || "Failed to transcribe audio.");
     } finally {
       setIsTranscribing(false);
@@ -253,10 +264,14 @@ export default function InterviewBot() {
 
     setStarting(true);
     try {
-      const res = await axios.post(url + "start-interview", {
-        email: user.email,
-        topic: topic.trim(),
-      });
+      const res = await axios.post(
+        url + "start-interview",
+        {
+          email: user.email,
+          topic: topic.trim(),
+        },
+        authConfig()
+      );
 
       const cleanTopic = res.data.topic || topic.trim();
       const history = res.data.chatHistory || [
@@ -283,7 +298,7 @@ export default function InterviewBot() {
         ...prev.filter((i) => i.sessionId !== res.data.sessionId),
       ]);
     } catch (error) {
-      console.error("Error starting interview:", error);
+      console.error("Error starting interview");
       toast.error(
         error.response?.data?.error || "Failed to start interview. Please try again."
       );
@@ -305,11 +320,15 @@ export default function InterviewBot() {
 
     setSubmitting(true);
     try {
-      const res = await axios.post(url + "answer", {
-        sessionId,
-        answer: answer.trim(),
-        email: user.email,
-      });
+      const res = await axios.post(
+        url + "answer",
+        {
+          sessionId,
+          answer: answer.trim(),
+          email: user.email,
+        },
+        authConfig()
+      );
 
       const updatedHistory =
         res.data.chatHistory ||
@@ -331,7 +350,7 @@ export default function InterviewBot() {
         )
       );
     } catch (error) {
-      console.error("Error submitting answer:", error);
+      console.error("Error submitting answer");
       toast.error(error.response?.data?.error || "Failed to submit answer!");
     } finally {
       setSubmitting(false);
@@ -343,10 +362,14 @@ export default function InterviewBot() {
 
     setEnding(true);
     try {
-      const res = await axios.post(url + "end-interview", {
-        sessionId,
-        email: user.email,
-      });
+      const res = await axios.post(
+        url + "end-interview",
+        {
+          sessionId,
+          email: user.email,
+        },
+        authConfig()
+      );
 
       setSessionStatus("ended");
       setFeedback(res.data.feedback || "Interview ended.");
@@ -367,7 +390,7 @@ export default function InterviewBot() {
       toast.success("Interview ended. Feedback is ready.");
       setConfirmDialog(null);
     } catch (error) {
-      console.error("Error ending interview:", error);
+      console.error("Error ending interview");
       toast.error(error.response?.data?.error || "Failed to end interview.");
     } finally {
       setEnding(false);
@@ -384,7 +407,8 @@ export default function InterviewBot() {
           "delete-interview?sessionId=" +
           encodeURIComponent(id) +
           "&email=" +
-          encodeURIComponent(user.email)
+          encodeURIComponent(user.email),
+        authConfig()
       );
       setInterviewHistory((prev) => prev.filter((interview) => interview.sessionId !== id));
       if (sessionId === id) {
@@ -393,7 +417,7 @@ export default function InterviewBot() {
       toast.success("Interview deleted successfully!");
       setConfirmDialog(null);
     } catch (error) {
-      console.error("Error deleting interview:", error);
+      console.error("Error deleting interview");
       toast.error(error.response?.data?.error || "Failed to delete interview!");
     } finally {
       setDeleting(false);

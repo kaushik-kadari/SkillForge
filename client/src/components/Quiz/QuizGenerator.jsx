@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Groq from "groq-sdk";
 import { LuBadgeCheck } from "react-icons/lu";
 import { LuBadgeX } from "react-icons/lu";
 import { FallingLines } from "react-loader-spinner";
 import { useAuth } from "../../services/AuthService";
-import { getTasks, addTask } from "../../services/contentService";
+import {
+  generateQuiz,
+  submitQuiz,
+  getBadges,
+} from "../../services/contentService";
 import MarkdownContent from "../MarkdownContent/MarkdownContent";
 import { X, Check, CircleX, ListChecks } from "lucide-react";
 
 const Quiz = ({ subject, topic, id }) => {
   const top = topic.toUpperCase();
+  const [quizId, setQuizId] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -17,11 +21,10 @@ const Quiz = ({ subject, topic, id }) => {
   const [quizOver, setQuizOver] = useState(false);
   const [started, setStarted] = useState(false);
   const [fetched, setFetched] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showReview, setShowReview] = useState(false);
-  const { addBadge, user } = useAuth();
-
-  const apiKey = import.meta.env.VITE_groqApiKey;
-  const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
+  const [loadError, setLoadError] = useState("");
+  const { user, setBadges } = useAuth();
 
   useEffect(() => {
     if (!showReview) return undefined;
@@ -35,44 +38,27 @@ const Quiz = ({ subject, topic, id }) => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await groq.chat.completions.create({
-          messages: [
-            {
-              role: "user",
-              content: `Imagine you as a professional ${subject} teacher.
-                    You are in charge of generating 5  questions for ${topic} from ${subject}.
-                    Questions should have the structure of: 
-                    [
-                        {
-                            "question": "What is ...",
-                            "options": ["option 1", "option 2", "option 3", "option 4"],
-                            "correctAnswer": "correct option"
-                        },
-                        ...
-                    ]
-                    Do not add any additional context or explanation even the first line of response only give 5 questions as a javascript array, and don't answer the query if it's not related to the ${topic} and ${subject} being discussed.
-                `,
-            },
-          ],
-          model: "qwen/qwen3.8-27b",
-          max_tokens: 900,
-          temperature: 0.4,
-        });
-        const responseString = response.choices[0].message.content;
-        const cleanedString = responseString.replace(/\\[\\n]/g, "");
-        const quizArray = JSON.parse(cleanedString);
-        setQuestions(quizArray);
+        setLoadError("");
+        const response = await generateQuiz(subject, topic, id);
+        setQuizId(response.quizId);
+        setQuestions(response.questions || []);
         setFetched(true);
       } catch (error) {
-        console.error("Failed to fetch quiz questions", error);
-        if (!fetched) fetchQuestions();
+        const status = error?.response?.status;
+        setLoadError(
+          status === 429
+            ? "AI rate limit reached. Please wait and try again."
+            : "Failed to load quiz questions. Please try again."
+        );
+        setFetched(false);
+        setStarted(false);
       }
     };
 
     if (started && !fetched) {
       fetchQuestions();
     }
-  }, [subject, topic, started]);
+  }, [subject, topic, id, started, fetched]);
 
   const handleAnswer = (option) => {
     setSelectedOptions((prev) => ({
@@ -87,51 +73,41 @@ const Quiz = ({ subject, topic, id }) => {
     }
   };
 
-  const handleBadges = async () => {
-    try {
-      if (!user.email) return;
-      const Task = subject + "-" + topic;
-      const res = await getTasks(user.email);
-      const done = !res.tasks ? false : res.tasks.includes(Task);
-      if (done) return;
-      await addTask(user.email, Task);
-    } catch (error) {
-      console.error(error);
+  const handleNextQuestion = async () => {
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion(currentQuestion + 1);
       return;
     }
 
-    id = Number.parseInt(id);
-    if (id >= 6 && id <= 17) {
-      addBadge(id);
-    } else if (id >= 18 && id <= 23) {
-      addBadge(id);
-    } else if (id >= 24 && id <= 29) {
-      addBadge(id);
-    } else if (id === 4) {
-      addBadge(4);
-    } else if (id === 5) {
-      addBadge(5);
-    }
-  };
-
-  const handleNextQuestion = () => {
-    if (currentQuestion + 1 < questions.length) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
+    if (!quizId || submitting) return;
+    setSubmitting(true);
+    try {
+      const result = await submitQuiz(quizId, selectedOptions);
+      setScore(result.score);
+      setQuestions(result.questions || questions);
       setQuizOver(true);
-      let nextScore = 0;
-      Object.keys(selectedOptions).forEach((index) => {
-        if (selectedOptions[index] === questions[index].correctAnswer) {
-          nextScore++;
+
+      if (result.awarded && user?.email && setBadges) {
+        try {
+          const badgesRes = await getBadges(user.email);
+          if (badgesRes?.badges) setBadges(badgesRes.badges);
+        } catch {
+          /* ignore badge refresh errors */
         }
-      });
-      setScore(nextScore);
-      if (nextScore == 5) handleBadges();
+      }
+    } catch (error) {
+      setLoadError(
+        error?.response?.data?.error ||
+          "Failed to submit quiz. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleStart = () => {
     setStarted(true);
+    setLoadError("");
   };
 
   const resetQuiz = () => {
@@ -141,16 +117,39 @@ const Quiz = ({ subject, topic, id }) => {
     setSelectedOptions({});
     setScore(0);
     setShowReview(false);
+    setFetched(false);
+    setQuizId(null);
+    setQuestions([]);
+    setLoadError("");
   };
+
+  if (loadError && !quizOver) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh] px-4 text-center gap-4">
+        <p className="text-base text-gray-700 font-medium">{loadError}</p>
+        <button
+          type="button"
+          className="bg-black text-sm text-white font-bold py-2 px-4 rounded"
+          onClick={resetQuiz}
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   if (quizOver) {
     return (
       <div className="flex flex-col">
         <h2 className="text-4xl font-bold text-center">{top}</h2>
         <div className="min-h-[50vh] flex flex-col items-center justify-center px-4">
-          {score === 5 ? <LuBadgeCheck size={150} /> : <LuBadgeX size={150} />}
+          {score === questions.length ? (
+            <LuBadgeCheck size={150} />
+          ) : (
+            <LuBadgeX size={150} />
+          )}
           <p className="text-4xl mt-8 text-center">
-            {score === 5 ? "Congratulations!! " : ""}
+            {score === questions.length ? "Congratulations!! " : ""}
             You scored {score} out of {questions.length}!
           </p>
 
@@ -231,7 +230,11 @@ const Quiz = ({ subject, topic, id }) => {
                               : "bg-red-600 text-white"
                           }`}
                         >
-                          {isCorrect ? <Check size={14} /> : <CircleX size={14} />}
+                          {isCorrect ? (
+                            <Check size={14} />
+                          ) : (
+                            <CircleX size={14} />
+                          )}
                         </span>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start gap-2 text-sm font-semibold text-black">
@@ -255,7 +258,9 @@ const Quiz = ({ subject, topic, id }) => {
                               ) : (
                                 <span
                                   className={
-                                    isCorrect ? "text-emerald-800" : "text-red-700"
+                                    isCorrect
+                                      ? "text-emerald-800"
+                                      : "text-red-700"
                                   }
                                 >
                                   {userAnswer}
@@ -296,7 +301,7 @@ const Quiz = ({ subject, topic, id }) => {
     );
   }
 
-  if (questions.length === 0 && started) {
+  if ((questions.length === 0 && started) || submitting) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
         <FallingLines
@@ -306,7 +311,7 @@ const Quiz = ({ subject, topic, id }) => {
           ariaLabel="falling-circles-loading"
         />
         <p className="text-base text-gray-500 font-light my-4">
-          Loading Quiz...
+          {submitting ? "Submitting Quiz..." : "Loading Quiz..."}
         </p>
       </div>
     );
@@ -326,7 +331,7 @@ const Quiz = ({ subject, topic, id }) => {
             </button>
           </div>
         )}
-        {started && (
+        {started && questions[currentQuestion] && (
           <div>
             <div className="flex items-start gap-2 text-xl mb-4 font-semibold">
               <span className="shrink-0 pt-0.5">{currentQuestion + 1}.</span>
@@ -394,7 +399,10 @@ const Quiz = ({ subject, topic, id }) => {
                       : ""
                   }`}
                   onClick={handleNextQuestion}
-                  disabled={selectedOptions[currentQuestion] === undefined}
+                  disabled={
+                    selectedOptions[currentQuestion] === undefined ||
+                    submitting
+                  }
                 >
                   Submit
                 </button>

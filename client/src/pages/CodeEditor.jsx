@@ -75,15 +75,22 @@ const CodeEditor = () => {
     setCompileError(false);
     setMobilePanel("output");
     try {
-      const res = await axios.post(`${serverUrl}execute-code`, {
-        language,
-        code,
-      });
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `${serverUrl}execute-code`,
+        {
+          language,
+          code,
+        },
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }
+      );
       const { output: resultOutput, isError } = res.data;
       setCompileError(Boolean(isError));
       setOutput(resultOutput || "No output.");
     } catch (error) {
-      console.error("Error running code:", error);
+      console.error("Error running code");
       setCompileError(true);
       const message =
         error.response?.data?.error || "Failed to run code. Please try again.";

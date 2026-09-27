@@ -98,7 +98,6 @@ exports.signUp = async (req, res) => {
   try {
     const { name, email, password, phone, college } = req.body;
     const hashedPassword = await bcrypt.hash(String(password), 10);
-    console.log(hashedPassword);
     const user = new User({
       name,
       email,
@@ -111,6 +110,17 @@ exports.signUp = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
     await user.save();
+
+    const badges = Array.from({ length: 29 }, (_, i) => ({
+      id: i + 1,
+      count: 0,
+    }));
+    await Badge.findOneAndUpdate(
+      { email },
+      { email, badges },
+      { upsert: true }
+    );
+
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -157,6 +167,9 @@ exports.validateJWT = async (req, res) => {
 exports.getBadges = async (req, res) => {
   try {
     const { email } = req.params;
+    if (req.user && req.user.email !== email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
     const badges = await Badge.findOne(
       { email },
       { _id: 0, __v: 0, "badges._id": 0 }
@@ -169,8 +182,12 @@ exports.getBadges = async (req, res) => {
 
 exports.addBadges = async (req, res) => {
   try {
-    const { email, badges } = req.body;
-    await Badge.findOneAndUpdate({ email }, req.body, { upsert: true });
+    const email = req.user?.email || req.body.email;
+    const { badges } = req.body;
+    if (req.user && req.body.email && req.body.email !== req.user.email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    await Badge.findOneAndUpdate({ email }, { email, badges }, { upsert: true });
     res.status(200).json({ message: "Badges added successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -179,8 +196,11 @@ exports.addBadges = async (req, res) => {
 
 exports.addTask = async (req, res) => {
   try {
-    const { email, task } = req.body;
-    //    console.log(email, task);
+    const email = req.user?.email || req.body.email;
+    const { task } = req.body;
+    if (req.user && req.body.email && req.body.email !== req.user.email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
     await Task.findOneAndUpdate(
       { email },
       { $addToSet: { tasks: task } },
@@ -188,7 +208,6 @@ exports.addTask = async (req, res) => {
     );
     res.status(200).json({ message: "Task added successfully" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -196,6 +215,9 @@ exports.addTask = async (req, res) => {
 exports.getTasks = async (req, res) => {
   try {
     const { email } = req.params;
+    if (req.user && req.user.email !== email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
     let tasks = await Task.findOne(
       { email },
       { _id: 0, __v: 0, "tasks._id": 0, email: 0 }
@@ -209,8 +231,10 @@ exports.getTasks = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    console.log(req.body);
     const { oldEmail, newEmail, name } = req.body;
+    if (req.user && oldEmail !== req.user.email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
 
     const existingUser = await User.findOne({ email: newEmail });
     if (existingUser) {
@@ -237,6 +261,9 @@ exports.updateUser = async (req, res) => {
 exports.updatePassword = async (req, res) => {
   try {
     const { email, oldPassword, newPassword } = req.body;
+    if (req.user && email !== req.user.email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -336,7 +363,11 @@ exports.setPassword = async (req, res) => {
 
 exports.addNotes = async (req, res) => {
   try {
-    const { email, subject, notes } = req.body;
+    const { subject, notes } = req.body;
+    const email = req.user?.email || req.body.email;
+    if (req.user && req.body.email && req.body.email !== req.user.email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
     await Notes.findOneAndUpdate(
       { email, subject },
       { $set: { notes } },
@@ -351,7 +382,9 @@ exports.addNotes = async (req, res) => {
 exports.getNotes = async (req, res) => {
   try {
     const { email, subject } = req.params;
-    // console.log(email);
+    if (req.user && req.user.email !== email) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
     const notes = await Notes.findOne(
       { email, subject },
       { _id: 0, __v: 0, "notes._id": 0, email: 0, subject: 0 }
@@ -622,13 +655,17 @@ const resolveSession = async (sessionId, email) => {
 // Interview
 
 exports.startInterview = async (req, res) => {
-  const { topic, email } = req.body;
+  const { topic } = req.body;
+  const email = req.user?.email || req.body.email;
 
   if (!topic?.trim()) {
     return res.status(400).json({ error: "Topic is required" });
   }
   if (!email?.trim()) {
     return res.status(400).json({ error: "User email is required" });
+  }
+  if (req.user && req.body.email && req.body.email !== req.user.email) {
+    return res.status(403).json({ error: "Forbidden" });
   }
 
   const cleanTopic = topic.trim();
@@ -700,10 +737,14 @@ exports.startInterview = async (req, res) => {
 };
 
 exports.answerInterview = async (req, res) => {
-  const { sessionId, answer, email } = req.body;
+  const { sessionId, answer } = req.body;
+  const email = req.user?.email || req.body.email;
 
   if (!sessionId || !answer?.trim()) {
     return res.status(400).json({ error: "sessionId and answer are required" });
+  }
+  if (req.user && req.body.email && req.body.email !== req.user.email) {
+    return res.status(403).json({ error: "Forbidden" });
   }
 
   try {
@@ -808,10 +849,14 @@ exports.answerInterview = async (req, res) => {
 };
 
 exports.endInterview = async (req, res) => {
-  const { sessionId, email } = req.body;
+  const { sessionId } = req.body;
+  const email = req.user?.email || req.body.email;
 
   if (!sessionId) {
     return res.status(400).json({ error: "sessionId is required" });
+  }
+  if (req.user && req.body.email && req.body.email !== req.user.email) {
+    return res.status(403).json({ error: "Forbidden" });
   }
 
   try {
@@ -884,9 +929,12 @@ Be constructive and specific. Use short plain paragraphs or bullet-like lines. C
 
 exports.interview = async (req, res) => {
   try {
-    const { email } = req.query;
+    const email = req.user?.email || req.query.email;
     if (!email) {
       return res.status(400).json({ error: "User email is required" });
+    }
+    if (req.user && req.query.email && req.query.email !== req.user.email) {
+      return res.status(403).json({ error: "Forbidden" });
     }
 
     const interviews = await Interview.find({
@@ -971,12 +1019,16 @@ exports.updateInterview = async (req, res) => {
 
 exports.deleteInterview = async (req, res) => {
   try {
-    const { sessionId, email } = req.query;
+    const { sessionId } = req.query;
+    const email = req.user?.email || req.query.email;
     if (!sessionId) {
       return res.status(400).json({ error: "sessionId is required" });
     }
     if (!email) {
       return res.status(400).json({ error: "email is required" });
+    }
+    if (req.user && req.query.email && req.query.email !== req.user.email) {
+      return res.status(403).json({ error: "Forbidden" });
     }
 
     const normalizedEmail = email.trim().toLowerCase();

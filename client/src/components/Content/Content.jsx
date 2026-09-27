@@ -18,7 +18,7 @@ import GenerateContent from "../GenerateContent/GenerateContent";
 import Quiz from "../Quiz/QuizGenerator";
 import ChatAi from "../ChatAi/ChatAi";
 import "./Content.css";
-import { getVideoLink, addVideoLink } from "../../services/contentService";
+import { resolveVideoLink } from "../../services/contentService";
 import { useAuth } from "../../services/AuthService";
 
 const Content = () => {
@@ -28,9 +28,6 @@ const Content = () => {
   const [videoLink, setVideoLink] = useState("");
   const { user } = useAuth();
 
-  // console.log(subject, topic, id);
-
-  const API_KEY = import.meta.env.VITE_ytKey; // yt key
   const url = import.meta.env.VITE_serverUrl;
 
   const Content = location.pathname.split("/");
@@ -89,27 +86,33 @@ const Content = () => {
       rating: ratings[index],
     }));
 
-    // console.log("Feedback submitted:", feedbacks);
-
     // Reset the ratings and hovered state
     setRatings(Array(questions.length).fill(0));
     setHovered(Array(questions.length).fill(null));
 
     const name = user.name;
     const email = user.email;
+    const token = localStorage.getItem("token");
 
-    // Send the feedback data to the server
     axios
-      .post(url + "add-feedback", {
-        name,
-        email,
-        subject,
-        topic,
-        feedbacks,
-      })
-      .then((res) => {
+      .post(
+        url + "add-feedback",
+        {
+          name,
+          email,
+          subject,
+          topic,
+          feedbacks,
+        },
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }
+      )
+      .then(() => {
         toast.success("Feedback submitted successfully!");
-        // console.log(res.data);
+      })
+      .catch(() => {
+        toast.error("Failed to submit feedback.");
       });
   };
 
@@ -123,48 +126,16 @@ const Content = () => {
     navigate(`/content/${subject}/${topic}/${id}/${type}`);
   };
 
-  const generateVideoLink = async (subject, topic) => {
-    try {
-      // console.log(subject, topic);
-      const searchQuery = `"${topic} in ${subject}"`;
-      const maxResults = 1; // Adjust as needed
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
-        searchQuery
-      )}&key=${API_KEY}&type=video&maxResults=${maxResults}&order=relevance`;
-
-      const response = await axios.get(url);
-      // console.log("vid id", response.data.items[0].id.videoId);
-      return (
-        "https://www.youtube.com/embed/" + response.data.items[0].id.videoId
-      );
-    } catch (error) {
-      console.error("Error generating video link:", error);
-      return error;
-    }
-  };
-
   useEffect(() => {
     handleVideoLink();
   }, []);
 
   const handleVideoLink = async () => {
     try {
-      const response = await getVideoLink(subject, topic);
-
-      // Success case (2xx)
+      const response = await resolveVideoLink(subject, topic);
       setVideoLink(response.videoLink);
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        // Generate new video link
-        const videoLink = await generateVideoLink(subject, topic);
-        setVideoLink(videoLink);
-
-        // Save to database
-        await addVideoLink(subject, topic, videoLink);
-        return;
-      } else {
-        console.error("Error fetching video link:", error);
-      }
+      console.error("Error fetching video link");
     }
   };
 
