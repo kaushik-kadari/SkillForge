@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 import { useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
+import MarkdownContent from "../MarkdownContent/MarkdownContent";
 import { addContent, getContent } from "../../services/contentService";
 import { FallingLines } from "react-loader-spinner";
 
@@ -9,6 +9,7 @@ const GenerateContent = ({ topic, subject }) => {
   const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
   const [content, setContent] = useState("");
+  const [error, setError] = useState("");
 
   const generateContent = async () => {
     try {
@@ -17,26 +18,29 @@ const GenerateContent = ({ topic, subject }) => {
           {
             role: "user",
             content: `Imagine you as a professional ${subject} teacher.
-              Explain about ${topic} from ${subject} in Detail in 10000 words or more. 
-              Guidelines for Generating PDF Content:
+              Explain ${topic} from ${subject} in clear detail (about 500–700 words).
+              Guidelines:
               Avoid including the main heading.
-              Ensure the content is clear, concise, and formatted for easy readability.
-              Maintain proper spacing between paragraphs for improved flow and visual appeal.
-              Use bold, italic, and strikethrough formatting for emphasis and importance.
+              Ensure the content is clear, concise, and easy to read.
+              Maintain proper spacing between paragraphs.
+              Use bold, italic, and strikethrough for emphasis where useful.
               Use headings for clarity and organization.
-              Use bullet points, numbered lists, or subheadings where applicable to organize key information.
-              Use proper grammar and spelling.
-              Use proper capitalization and punctuation.
-              Ensure no references or citations are included.
+              Use bullet points, numbered lists, or subheadings where applicable.
+              Use proper grammar, spelling, capitalization, and punctuation.
+              Do not include references or citations.
             `,
           },
         ],
-        model: "llama-3.1-8b-instant",
+        model: "qwen/qwen3.8-27b",
+        // Groq free tier OTPM is 1000 for this model — keep under the cap
+        max_tokens: 900,
+        temperature: 0.6,
       });
 
       const generatedContent = response.choices[0].message.content;
       setContent(generatedContent);
-      return generatedContent; // Return generated content for use in other async functions
+      setError("");
+      return generatedContent;
     } catch (error) {
       console.error("Error generating content:", error);
       throw error;
@@ -62,11 +66,20 @@ const GenerateContent = ({ topic, subject }) => {
     } catch (error) {
       if (error.response && error.response.status === 404) {
         // 404 -> generate content
-        const generatedContent = await generateContent();
-        await addContentHandler(subject, subtopic, generatedContent);
+        try {
+          const generatedContent = await generateContent();
+          await addContentHandler(subject, subtopic, generatedContent);
+        } catch (genError) {
+          const msg =
+            genError?.status === 429 || genError?.message?.includes("429")
+              ? "AI rate limit reached. Please wait a minute and refresh to try again."
+              : "Failed to generate content. Please refresh and try again.";
+          setError(msg);
+        }
       } else {
         // Other errors -> show error
         console.error("Unexpected error:", error);
+        setError("Failed to load content. Please try again.");
       }
     }
   };
@@ -75,12 +88,17 @@ const GenerateContent = ({ topic, subject }) => {
     getContentHandler(subject, topic);
   }, [subject, topic]);
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh] px-4 text-center">
+        <p className="text-base text-gray-700 font-medium">{error}</p>
+      </div>
+    );
+  }
+
   if (content == "") {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] max-h-[60vh]">
-        {/* <p className="text-3xl font-semibold my-4">
-          Loading Content
-        </p> */}
         <FallingLines
           color="black"
           width="150"
@@ -96,9 +114,7 @@ const GenerateContent = ({ topic, subject }) => {
 
   return (
     <div>
-      <ReactMarkdown breaks={true} className="markdown-body">
-        {content}
-      </ReactMarkdown>
+      <MarkdownContent>{content}</MarkdownContent>
     </div>
   );
 };

@@ -130,7 +130,13 @@ npm run start
 DB_URI=your_mongodb_connection_string
 SECRET_KEY=your_jwt_secret_key
 API_KEY=your_groq_api_key
+JUDGE0_API_KEY=your_rapidapi_judge0_ce_key
+JUDGE0_API_HOST=judge0-ce.p.rapidapi.com
+JUDGE0_API_URL=https://judge0-ce.p.rapidapi.com
 ```
+
+> **CodePlay execution:** By default uses **Wandbox** (free public API, no billing).  
+> Optional: set `JUDGE0_API_KEY` to use Judge0 CE on RapidAPI instead (requires a subscribed RapidAPI plan with billing on file for their “Basic” pay-per-use plan).
 
 ---
 

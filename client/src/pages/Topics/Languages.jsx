@@ -92,54 +92,68 @@ const Languages = () => {
     }
   }, [tasks]);
   return (
-    <>
-      <div>
-        <h1 className='text-4xl font-bold text-center my-10'>{heading}</h1>
-        <div className="lg:grid lg:grid-cols-2 gap-4 p-10 flex flex-col max-h-2/3">
-          <div className="bg-[#ebe7de5b] w-11/12 mx-auto rounded-md border shadow-lg p-2">
-            <div className='grid grid-cols-2 gap-4'>
-              <div className='w-11/12 mx-auto'>
-                <p className='bg-[#e4e2e2] text-2xl text-center rounded-md'>Topics</p>
-                <div className='flex flex-col md:space-y-12 space-y-8 my-10 '>
-                  {topics.map((topic) => (
-                    <Link key={topic.path} to={topic.path} className="text-xl text-center">
-                      {topic.label}
-                    </Link>
-                  ))}
-                </div>
+    <div className="w-full min-w-0 px-3 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 md:mb-10">
+        {heading}
+      </h1>
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        {/* Topics & Badges */}
+        <div className="bg-[#ebe7de5b] w-full h-[60vh] sm:h-[65vh] rounded-md border shadow-lg p-2 flex flex-col min-h-0">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 shrink-0">
+            <p className="bg-[#e4e2e2] text-lg sm:text-xl md:text-2xl text-center rounded-md my-2 py-1.5 font-medium">
+              Topics
+            </p>
+            <p className="bg-[#e4e2e2] text-lg sm:text-xl md:text-2xl text-center rounded-md my-2 py-1.5 font-medium">
+              Badges
+            </p>
+          </div>
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain pr-1">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4 py-4">
+              <div className="flex flex-col gap-8 md:gap-12">
+                {topics.map((topic) => (
+                  <Link
+                    key={topic.path}
+                    to={topic.path}
+                    className="text-base sm:text-lg md:text-xl text-center leading-snug hover:underline underline-offset-2"
+                  >
+                    {topic.label}
+                  </Link>
+                ))}
               </div>
-              <div className=''>
-                <p className='bg-[#e4e2e2] text-2xl text-center rounded-md'>Badges</p>
-                <div className='flex flex-col md:space-y-12 space-y-8 my-10'>
-                  {Badges.map((badge) => (
-                    <div key={badge.id} className='mx-auto flex'>
-                    <p className="text-xl">{Math.min(badge.count, topics[badge.id - 6].count)} of {topics[badge.id - 6].count}</p>
-                    <HiBadgeCheck className='text-xl ml-2'/>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex flex-col gap-8 md:gap-12">
+                {Badges.map((badge) => (
+                  <div
+                    key={badge.id}
+                    className="mx-auto flex items-center justify-center gap-1 sm:gap-2"
+                  >
+                    <p className="text-base sm:text-lg md:text-xl whitespace-nowrap">
+                      {Math.min(badge.count, topics[badge.id - 6].count)} of{" "}
+                      {topics[badge.id - 6].count}
+                    </p>
+                    <HiBadgeCheck className="text-lg md:text-xl shrink-0" />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
+        </div>
 
-          <div className='bg-[#ebe7de5b] mx-auto rounded-md border shadow-lg w-11/12'>
-            <p className='text-2xl text-center m-3 p-2 bg-[#e4e2e2] rounded-md'>Progress</p>
-            
-            <div className="md:hidden flex flex-col justify-center mt-8 md:mt-24">
-              <div className="overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4" style={{ scrollBehavior: 'smooth' }}>
-                <div className="flex space-x-4 justify-start items-center">
-                  <Carousel progress={progress} />
-                </div>
-              </div>
+        {/* Progress — compact on small screens (carousel), fixed height from md up */}
+        <div className="bg-[#ebe7de5b] w-full h-auto md:h-[60vh] lg:h-[65vh] rounded-md border shadow-lg p-2 flex flex-col min-h-0">
+          <p className="shrink-0 text-lg sm:text-xl md:text-2xl text-center m-2 p-2 bg-[#e4e2e2] rounded-md font-medium">
+            Progress
+          </p>
+          <div className="md:flex-1 md:min-h-0 md:overflow-y-auto overscroll-contain">
+            <div className="md:hidden flex flex-col justify-center py-3 sm:py-4">
+              <Carousel progress={progress} />
             </div>
-
-            <div className={`hidden md:grid md:grid-cols-2 md:gap-8 md:my-4 lg:mt-8`}>
-              <Progress progress={progress} />
+            <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 py-6 px-3 sm:px-6 place-items-stretch">
+              <Progress progress={progress} size="md" fill />
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

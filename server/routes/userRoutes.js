@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const codeExecutionController = require('../controllers/codeExecutionController');
 
 router.get('/', userController.getSubtopics);
 router.get('/hello', (req, res) => res.send('Hello World!'));
@@ -25,12 +26,17 @@ router.get('/getNotes/:email/:subject', userController.getNotes);
 
 //interview
 router.post("/start-interview", userController.startInterview);
-router.post("/answer",userController.answerInterview);
-router.post("/end-interview",userController.endInterview);
-router.get("/interview",userController.interview);
-router.post("/save-interview",userController.saveInterview);
-router.post("/update-interview",userController.updateInterview);
-router.delete("/delete-interview",userController.deleteInterview);
+router.post("/answer", userController.answerInterview);
+router.post("/end-interview", userController.endInterview);
+router.get("/interview", userController.interview);
+router.post("/save-interview", userController.saveInterview);
+router.post("/update-interview", userController.updateInterview);
+router.delete("/delete-interview", userController.deleteInterview);
+router.post("/transcribe", userController.transcribeAudio);
+
+// CodePlay — Judge0 CE (RapidAPI)
+router.post("/execute-code", codeExecutionController.executeCode);
+router.get("/execute-languages", codeExecutionController.getSupportedLanguages);
 
 
 

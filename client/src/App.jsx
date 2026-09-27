@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
 import LandingPage from "./pages/LandingPage";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Frontend from "./pages/Topics/Frontend.jsx";
 import Languages from "./pages/Topics/Languages.jsx";
@@ -27,7 +27,7 @@ const App = () => {
 
   return (
     <>
-      <div className="min-h-[100vh] flex flex-col">
+      <div className="min-h-[100dvh] flex flex-col overflow-x-hidden">
         {isAuthenticated && <Navbar />}
 
         <ToastContainer
@@ -42,7 +42,7 @@ const App = () => {
           theme="light"
         />
 
-        <div className="flex-grow">
+        <div className={`flex-grow min-w-0`}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route
@@ -160,16 +160,6 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-
-        {isAuthenticated && (
-          <footer
-            className="bg-gray-100 shadow-xl border-t"
-          >
-            <div className="container mx-auto text-center text-sm ">
-              <p>&copy; 2025 SkillForge. All rights reserved.</p>
-            </div>
-          </footer>
-        )}
       </div>
     </>
   );

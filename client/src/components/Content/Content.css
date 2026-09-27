@@ -17,11 +17,48 @@
   .markdown-body ul {
     margin-bottom: 1rem;
     padding-left: 1.5rem;
+    list-style: disc;
   }
-  
+
+  .markdown-body ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    list-style: decimal;
+  }
+
+  .markdown-body li {
+    margin-bottom: 0.35rem;
+  }
+
   .markdown-body blockquote {
     padding-left: 1rem;
     border-left: 4px solid #ddd;
     margin-bottom: 1rem;
   }
-  
+
+  .markdown-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .markdown-body pre {
+    overflow-x: auto;
+  }
+
+  .markdown-compact p,
+  .markdown-compact ul,
+  .markdown-compact ol {
+    margin-top: 0;
+    margin-bottom: 0.35rem;
+  }
+
+  .markdown-compact p:last-child,
+  .markdown-compact ul:last-child,
+  .markdown-compact ol:last-child {
+    margin-bottom: 0;
+  }
+
+  .chat-message .markdown-body p:last-child,
+  .chat-message .markdown-body ul:last-child,
+  .chat-message .markdown-body ol:last-child {
+    margin-bottom: 0;
+  }

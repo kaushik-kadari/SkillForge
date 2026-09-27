@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Groq from "groq-sdk";
 import "./ChatAi.css"; // Chatbot-specific styling
-import ReactMarkdown from "react-markdown";
+import MarkdownContent from "../MarkdownContent/MarkdownContent";
 import { RiRobot3Line } from "react-icons/ri";
 
 const ChatAi = ({ subject, topic }) => {
@@ -59,7 +59,9 @@ const ChatAi = ({ subject, topic }) => {
             Remember: Your goal is to help students learn ${topic} effectively within the ${subject} domain.`
           },
         ],
-        model: "llama-3.1-8b-instant", // Model used for generating responses
+        model: "qwen/qwen3.8-27b", // Model used for generating responses
+        max_tokens: 900,
+        temperature: 0.5,
       });
 
       // Add the AI's response to the message list
@@ -96,18 +98,21 @@ const ChatAi = ({ subject, topic }) => {
           )
         }
         {messages.map((message, index) => (
-          <div className="flex">
-            <p key={index}>{message.role === "ai" && (
+          <div className="flex" key={`${message.role}-${index}`}>
+            <p>
+              {message.role === "ai" && (
                 <RiRobot3Line className="text-2xl mr-2" />
-            )}</p>
-          <p
-            key={index + message.role}
-            className={`chat-message ${
-              message.role === "user" ? "user-message" : "ai-message"
-            }`}
-          >
-            <ReactMarkdown>{message.content}</ReactMarkdown>
-          </p>
+              )}
+            </p>
+            <div
+              className={`chat-message ${
+                message.role === "user" ? "user-message" : "ai-message"
+              }`}
+            >
+              <MarkdownContent compact>
+                {message.content}
+              </MarkdownContent>
+            </div>
           </div>
         ))}
         {loading && <p className="loading-text">AI is thinking...</p>}
