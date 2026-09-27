@@ -3,8 +3,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { addBadges } from "../services/contentService";
-
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,13 +36,10 @@ const Signup = () => {
 
     const url = import.meta.env.VITE_serverUrl;
 
+    let succeeded = false;
     try {
       const response = await axios.post(url + "signup", formData);
-      const badges = Array.from({ length: 29 }, (_, i) => ({
-        id: i + 1,
-        count: 0,
-      }));
-      await addBadges(email, badges);
+      succeeded = true;
       toast.success(response.data.message, { autoClose: 1000 });
       setTimeout(() => {
         navigate("/login");
@@ -54,8 +49,7 @@ const Signup = () => {
       toast.error(msg);
     } finally {
       setIsLoading(false);
-      // Don't clear the form on error to prevent user frustration
-      if (!error) {
+      if (succeeded) {
         setEmail("");
         setPassword("");
         setConfirmPassword("");

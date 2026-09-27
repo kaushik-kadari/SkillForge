@@ -1,16 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import Groq from "groq-sdk";
-import "./ChatAi.css"; // Chatbot-specific styling
-import ReactMarkdown from "react-markdown";
+import "./ChatAi.css";
+import MarkdownContent from "../MarkdownContent/MarkdownContent";
 import { RiRobot3Line } from "react-icons/ri";
+import { chatWithTutor } from "../../services/contentService";
 
 const ChatAi = ({ subject, topic }) => {
-  const apiKey = import.meta.env.VITE_groqApiKey;
-  const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
-
-  const [query, setQuery] = useState(""); // User's query
-  const [messages, setMessages] = useState([]); // Messages array to store user and AI messages
-  const [loading, setLoading] = useState(false); // Loading state
+  const [query, setQuery] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const chatWindowRef = useRef(null);
 
@@ -20,61 +17,35 @@ const ChatAi = ({ subject, topic }) => {
     }
   }, [messages]);
 
-  // handle Key Down (Enter) event
   const handleKeyDown = (e) => {
-    // e.preventDefault();
     if (e.key === "Enter" && !e.shiftKey) {
       handleQuerySubmit(e);
     }
-  }
+  };
 
-  // Function to handle submitting the query
   const handleQuerySubmit = async (e) => {
     e.preventDefault();
-    if (!query) return; // If query is empty, do nothing
-    setLoading(true); // Show loading state
+    if (!query) return;
+    setLoading(true);
 
-    // Add the user's query to the message list
-    setMessages((prev) => [...prev, { role: "user", content: query }]);
-    setQuery(""); // Clear the input
+    const userQuery = query;
+    setMessages((prev) => [...prev, { role: "user", content: userQuery }]);
+    setQuery("");
 
     try {
-      // Send the user's query to the Groq API
-      const res = await groq.chat.completions.create({
-        messages: [
-          {
-            role: "user",
-            content: `You are an expert ${subject} tutor specializing in ${topic}. Your role is to help students understand concepts clearly and concisely.
-
-            CONTEXT: You have just explained the concept of ${topic}. A student is now asking: '${query}'
-
-            GUIDELINES:
-            1. Check if the query is relevant to ${topic} and ${subject}
-            2. If relevant: Provide a clear, concise answer (max 800 words unless detailed explanation is requested)
-            3. If irrelevant: Respond with "This question is outside the scope of our current topic. Let's focus on ${topic} related questions."
-            4. For greetings (hello, hi, etc.) and farewells (bye, goodbye): Respond naturally as a helpful tutor
-            5. Stay focused on the educational context - no extra explanations or off-topic content
-            6. Use simple, student-friendly language appropriate for learning
-
-            Remember: Your goal is to help students learn ${topic} effectively within the ${subject} domain.`
-          },
-        ],
-        model: "llama-3.1-8b-instant", // Model used for generating responses
-      });
-
-      // Add the AI's response to the message list
+      const res = await chatWithTutor(subject, topic, userQuery);
       setMessages((prev) => [
         ...prev,
-        { role: "ai", content: res.choices[0].message.content },
+        { role: "ai", content: res.content },
       ]);
     } catch (error) {
-      console.error("Error fetching AI response:", error);
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", content: "Something went wrong. Please try again." },
-      ]);
+      const msg =
+        error?.response?.status === 429
+          ? "AI is busy right now. Please wait a moment and try again."
+          : "Something went wrong. Please try again.";
+      setMessages((prev) => [...prev, { role: "ai", content: msg }]);
     } finally {
-      setLoading(false); // Hide loading state
+      setLoading(false);
     }
   };
 
@@ -84,36 +55,33 @@ const ChatAi = ({ subject, topic }) => {
         Interact with our AI Assistant
       </h2>
 
-      {/* Chat window displaying all messages */}
       <div className="chat-window" ref={chatWindowRef}>
-        {
-          messages.length === 0 && (
-            <div className="flex items-center justify-center h-full">
-              <p className="loading-text text-xl">
-                Start by asking a question related to the content...
-              </p>
-            </div>
-          )
-        }
+        {messages.length === 0 && (
+          <div className="flex items-center justify-center h-full">
+            <p className="loading-text text-xl">
+              Start by asking a question related to the content...
+            </p>
+          </div>
+        )}
         {messages.map((message, index) => (
-          <div className="flex">
-            <p key={index}>{message.role === "ai" && (
+          <div className="flex" key={`${message.role}-${index}`}>
+            <p>
+              {message.role === "ai" && (
                 <RiRobot3Line className="text-2xl mr-2" />
-            )}</p>
-          <p
-            key={index + message.role}
-            className={`chat-message ${
-              message.role === "user" ? "user-message" : "ai-message"
-            }`}
-          >
-            <ReactMarkdown>{message.content}</ReactMarkdown>
-          </p>
+              )}
+            </p>
+            <div
+              className={`chat-message ${
+                message.role === "user" ? "user-message" : "ai-message"
+              }`}
+            >
+              <MarkdownContent compact>{message.content}</MarkdownContent>
+            </div>
           </div>
         ))}
         {loading && <p className="loading-text">AI is thinking...</p>}
       </div>
 
-      {/* Form to enter the user's query */}
       <form onSubmit={handleQuerySubmit} className="chat-form">
         <textarea
           value={query}
@@ -124,7 +92,11 @@ const ChatAi = ({ subject, topic }) => {
           className="chat-input outline-none"
           required
         />
-        <button type="submit" className="chat-submit-btn font-semibold hover:bg-[#676767]" disabled={loading}>
+        <button
+          type="submit"
+          className="chat-submit-btn font-semibold hover:bg-[#676767]"
+          disabled={loading}
+        >
           {loading ? "Loading..." : "Ask AI"}
         </button>
       </form>

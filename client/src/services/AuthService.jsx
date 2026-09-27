@@ -77,6 +77,14 @@ export const AuthProvider = ({ children }) => {
   }, [location.pathname]);
 
   const logout = async () => {
+    // Persist badges while the JWT is still available
+    if (user.email && badges.length > 0) {
+      try {
+        await addBadges(user.email, badges);
+      } catch {
+        /* ignore */
+      }
+    }
     localStorage.clear();
     sessionStorage.clear();
     setIsAuthenticated(false);
@@ -84,8 +92,7 @@ export const AuthProvider = ({ children }) => {
       name: "",
       email: "",
     });
-    if(user.email && badges.length > 0) await addBadges(user.email, badges);
-    // window.location.href = "/login";
+    setBadges([]);
     navigate("/login");
   };
 

@@ -15,6 +15,8 @@ You can try out the live demo of **SkillForge** at:
 
 ---
 
+
+
 ## ✨ Features
 
 - 📚 **Content Hub**: Read structured tutorials and notes on CS topics  
@@ -26,9 +28,11 @@ You can try out the live demo of **SkillForge** at:
 - 📊 **User Dashboard**: Track your learning progress in real-time  
 - 🧾 **Progress Tracking**: Auto-updated as you complete content and quizzes
 - 📝 **Notes Feature**: Take and organize personal notes for each topic  
-- 🔐 **Authentication**: Secure login and user-specific data  
+- 🔐 **Authentication**: Secure login and user-specific data
 
 ---
+
+
 
 ## 🛠️ Tech Stack
 
@@ -42,28 +46,40 @@ You can try out the live demo of **SkillForge** at:
 
 ---
 
+
+
 ## 🖼️ Sample Images
 
-### 🏠 Dashboard Overview   
+
+
+### 🏠 Dashboard Overview
+
   ![Dashboard](client/public/screenshots/dashboard.jpg)
 
-### 📚 Reading Content  
+### 📚 Reading Content
+
   ![Reading Content](client/public/screenshots/content.jpg)
 
-### 💬 Chat with PDF  
+### 💬 Chat with PDF
+
   ![Chat with PDF](client/public/screenshots/chat-pdf.jpg)
 
-### ❓ Interactive Quizzes  
+### ❓ Interactive Quizzes
+
   ![Interactive Quizzes](client/public/screenshots/quiz.jpg)
 
-### 💻 Code Editor  
-  ![Code Editor](client/public/screenshots/code-editor.jpg)
-  
-### 🧠 Interview Bot  
-  ![Interview Bot](client/public/screenshots/interview-bot.jpg)
+### 💻 Code Editor
 
+  ![Code Editor](client/public/screenshots/code-editor.png)
+  
+
+### 🧠 Interview Bot
+
+  ![Interview Bot](client/public/screenshots/interview-bot.png)
 
 ---
+
+
 
 ## 📁 Project Structure
 
@@ -91,7 +107,11 @@ SkillForge/
 
 ---
 
+
+
 ## 🧰 Installation
+
+
 
 ### 1. Clone the Repository
 
@@ -99,6 +119,8 @@ SkillForge/
 git clone https://github.com/kaushik-kadari/SkillForge.git
 cd SkillForge
 ```
+
+
 
 #### 2. Setup Frontend
 
@@ -108,13 +130,17 @@ npm install
 npm run dev
 ```
 
+
+
 ##### `client/.env` Example
 
 ```env
-VITE_serverUrl=http://localhost:5000
-VITE_groqApiKey=your_groq_api_key
-VITE_ytKey=your_youtube_api_key
+VITE_serverUrl=http://localhost:3000/api/
 ```
+
+> Do **not** put API keys in the client env. Groq and YouTube keys belong only on the server.
+
+
 
 #### 3. Setup Backend
 
@@ -124,15 +150,26 @@ npm install
 npm run start
 ```
 
+
+
 ##### `server/.env` Example
 
 ```env
 DB_URI=your_mongodb_connection_string
 SECRET_KEY=your_jwt_secret_key
 API_KEY=your_groq_api_key
+YT_API_KEY=your_youtube_api_key
+JUDGE0_API_KEY=your_rapidapi_judge0_ce_key
+JUDGE0_API_HOST=judge0-ce.p.rapidapi.com
+JUDGE0_API_URL=https://judge0-ce.p.rapidapi.com
 ```
 
+> **CodePlay execution:** By default uses **Wandbox** (free public API, no billing).  
+> Optional: set `JUDGE0_API_KEY` to use Judge0 CE on RapidAPI instead (requires a subscribed RapidAPI plan with billing on file for their “Basic” pay-per-use plan).
+
 ---
+
+
 
 ## 🌱 Future Enhancements
 
@@ -145,18 +182,22 @@ API_KEY=your_groq_api_key
 
 ---
 
+
+
 ## 🤝 Contributing
 
 Contributions are welcome!  
 Here’s how you can help:
 
-1. Fork the repo  
-2. Create your feature branch: `git checkout -b feature/YourFeature`  
-3. Commit your changes: `git commit -m 'Add your message here'`  
-4. Push to the branch: `git push origin feature/YourFeature`  
+1. Fork the repo
+2. Create your feature branch: `git checkout -b feature/YourFeature`
+3. Commit your changes: `git commit -m 'Add your message here'`
+4. Push to the branch: `git push origin feature/YourFeature`
 5. Submit a pull request
 
 ---
+
+
 
 ## 🙏 Thank You
 
